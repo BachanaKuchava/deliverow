@@ -1,0 +1,559 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;700&display=swap');
+
+/* —————————————————————————————————————————————
+   HAMBURGER PANEL OPEN/CLOSE ANIMATIONS
+————————————————————————————————————————————— */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* when panel mounts */
+@media (max-width: 1100px) {
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 280px;
+    background: #fff;
+    box-shadow: -4px 0 12px rgba(0,0,0,0.1);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+    animation: slideIn 0.3s ease forwards;
+  }
+
+  .mobile-menu.closing {
+    animation: slideOut 0.3s ease forwards;
+  }
+
+  .mobile-menu__close {
+    align-self: flex-end;
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+  }
+
+  .mobile-menu__search {
+    display: flex;
+    margin-bottom: 1rem;
+
+    input {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px 0 0 4px;
+      outline: none;
+    }
+
+    button {
+      background: #014681;
+      border: none;
+      padding: 0 0.75rem;
+      color: #fff;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+    }
+  }
+
+  .mobile-menu__nav {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #eee;
+
+      a {
+        color: #232345;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s;
+        &:hover { color: #014681; }
+      }
+
+      .mobile-menu__toggle {
+        font-size: 1rem;
+        color: #999;
+        cursor: pointer;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  .mobile-menu__socials {
+    margin-top: auto;
+    display: flex;
+    gap: 0.75rem;
+
+    a {
+      color: #555;
+      font-size: 1.2rem;
+      transition: color 0.2s;
+      &:hover { color: #014681; }
+    }
+  }
+}
+
+/* —————————————————————————————————————————————
+   RESPONSIVE HEADER HIDES/SHOWS
+————————————————————————————————————————————— */
+.burger-menu {
+  display: none;
+}
+.mobilelogo {
+  display: none;
+}
+@media (max-width: 1368px) {
+  .upper-header {
+    display: none;
+  }
+}
+@media (max-width: 1100px) {
+  .under-header .menu,
+  .under-header .right-block {
+    display: none !important;
+  }
+  .logo-icon {
+    display: none;
+  }
+  .logo {
+    display: none !important;
+  }
+  .mobilelogo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .mobilelogolink {
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: #014681;
+    cursor: pointer;
+  }
+  .logo-icon-mobile {
+    width: 50px;
+  }
+  .logo-icon {
+    pointer-events: none;
+  }
+  .burger-menu {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    right: 38px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 250;
+    color: #014681;
+  }
+}
+
+/* —————————————————————————————————————————————
+   ORIGINAL HEADER STYLES (unchanged)
+————————————————————————————————————————————— */
+.upper-header {
+  background: #014681;
+  color: #fff;
+  font-family: 'Fira Sans', sans-serif;
+  font-weight: 300;
+  font-size: 15px;
+  padding: 0.35rem 0;
+
+  .container {
+    max-width: 1800px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    @media (max-width: 1024px) {
+      flex-direction: column;
+      align-items: stretch;
+      font-size: 14px;
+      gap: 0.3rem;
+    }
+  }
+
+  &__left,
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    flex-wrap: wrap;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    svg { color: #01b8ff; }
+  }
+
+  &__right {
+    gap: 1.1rem;
+
+    .upper-header__divider {
+      width: 1px;
+      height: 18px;
+      background: #3a3a66;
+      margin: 0 8px;
+    }
+
+    .upper-header__follow {
+      margin-right: 0.2rem;
+    }
+
+    .upper-header__icon {
+      color: #fff;
+      font-size: 1em;
+      margin-right: 0.3rem;
+      transition: color 0.15s;
+      &:hover { color: #01b8ff; }
+    }
+
+    .upper-header__link {
+      color: #fff;
+      text-decoration: none;
+      transition: color 0.15s;
+      margin-right: 0.7rem;
+      &:hover { color: #014681; }
+      @media (max-width: 400px) { margin-right: 0.2rem; }
+    }
+  }
+
+  @media (max-width: 768px) {
+    font-size: 13px;
+
+    .container {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.7rem;
+      padding: 0 10px;
+    }
+
+    &__left,
+    &__right {
+      gap: 0.7rem;
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }
+}
+
+.under-header {
+  background: #fff;
+  font-family: 'Fira Sans', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  border-top: 1px solid #e5e8ef;
+
+  &__container {
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 0 38px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 76px;
+    position: relative;
+    gap: 0.5rem;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: #014681;
+    img { height: 40px; width: 40px; }
+    cursor: pointer;
+    &:hover {
+      transform: scale(1.05);
+      transition: 0.3s;
+      opacity: 80%;
+    }
+  }
+
+  .menu {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 38px;
+    a {
+      color: #232345;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.15s;
+      span { font-size: 0.7em; margin-left: 3px; }
+      &:hover { color: #014681; }
+    }
+  }
+
+  .right-block {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    .lang-selector {
+      position: relative;
+      margin-right: 1.5rem;
+
+      &__btn {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        background: none;
+        border: none;
+        color: #666;
+        font-size: 1rem;
+        cursor: pointer;
+        padding: 0;
+      }
+
+      &__btn svg:last-child {
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+
+      &__btn:hover svg:last-child {
+        opacity: 1;
+      }
+
+      &__current {
+        font-weight: 600;
+      }
+    }
+
+    .divider {
+      height: 40px;
+      width: 1px;
+      background: #e5e8ef;
+      @media (max-width: 900px) { display: none; }
+    }
+
+    .phone-block {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .icon {
+        background: #e8f4fd;
+        color: #1977d6;
+        border-radius: 50%;
+        padding: 8px;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .phone-text {
+        display: flex;
+        flex-direction: column;
+
+        .phone-label {
+          font-size: 0.85rem;
+          color: #858ba9;
+        }
+
+        .phone-number {
+          font-weight: 700;
+          color: #17175d;
+          font-size: 1rem;
+          letter-spacing: 0.2px;
+        }
+      }
+    }
+
+    .login-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #23a8df;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 7px;
+      padding: 0.65rem 1.35rem;
+      text-decoration: none;
+      transition: background 0.18s;
+
+      .login-icon { font-size: 1.15rem; }
+
+      &:hover { background: #014681; }
+    }
+  }
+
+  @media (max-width: 1100px) {
+    &__container {
+      padding: 0 8px;
+      height: auto;
+      min-height: 68px;
+    }
+    .right-block {
+      .divider { display: none; }
+      gap: 10px;
+      .login-button {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.95rem;
+      }
+    }
+    .logo {
+      font-size: 1.3rem;
+      img { height: 32px; width: 32px; }
+    }
+  }
+
+  @media (max-width: 800px) {
+    .logo { font-size: 1.1rem; }
+    .right-block .phone-text { display: none; }
+  }
+
+  @media (max-width: 700px) {
+    &__container {
+      align-items: stretch;
+      gap: 6px;
+      padding: 0 4px;
+    }
+  }
+}
+
+/* —————————————————————————————————————————————
+   HELP PANEL / SIDEBAR
+————————————————————————————————————————————— */
+.help-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 300px;
+  max-width: 80%;
+  background: #fff;
+  box-shadow: -4px 0 12px rgba(24,20,63,0.07);
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 200;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.help-panel.active {
+  transform: translateX(0);
+}
+
+.help-close {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: #232345;
+  cursor: pointer;
+}
+
+.help-panel__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #17175d;
+}
+
+.help-panel hr {
+  border: none;
+  border-bottom: 1px solid #232345;
+  margin: 8px 0 16px;
+}
+
+.help-panel h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #17175d;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+
+.help-panel p {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin: 2px 0;
+}
+
+.help-panel .socials {
+  margin-top: auto;
+  display: flex;
+  gap: 12px;
+}
+
+.help-panel .socials a {
+  color: #232345;
+  font-size: 1.3rem;
+  transition: color 0.2s;
+}
+
+.help-panel .socials a:hover {
+  color: #01b8ff;
+}
+
+/* Logo icon in under-header */
+.logo-icon {
+  width: 50px;
+  cursor: pointer;
+  &:hover {
+    transform: scale(1.05);
+    opacity: 80%;
+    transition: 0.4s;
+  }
+}
+
+/* Deliverow link styling */
+.logolink {
+  text-decoration: none;
+  color: #014681;
+}
+
+/* Header appear on route change */
+.site-header {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.site-header.appear {
+  opacity: 1;
+  transform: translateY(0);
+}

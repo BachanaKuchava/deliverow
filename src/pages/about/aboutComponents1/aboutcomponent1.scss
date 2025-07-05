@@ -1,0 +1,124 @@
+.about1 {
+  position: relative;
+  height: 600px;
+  background: url('https://picsum.photos/1600/900?blur=2') center/cover fixed;
+  overflow: hidden;
+
+  &__video {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+
+  &__overlay {
+    position: relative;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.5);
+    width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 10%;
+  }
+
+  &__content {
+    flex: 0 0 40%;
+    padding-right: 20px;
+    color: #fff;
+    text-align: left;
+
+    & .about1__subtitle {
+      text-transform: uppercase;
+      color: #a0d3ff;
+      font-size: 14px;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+
+    & .about1__title {
+      font-size: 3.2rem;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    & .about1__desc {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 32px;
+      opacity: 0.9;
+    }
+
+    &__stats {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+
+      .stat {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        &__label {
+          flex: 1;
+          font-size: 1rem;
+        }
+
+        &__value {
+          width: 50px;
+          text-align: right;
+          font-size: 1.25rem;
+          font-weight: bold;
+        }
+
+        &__bar {
+          position: relative;
+          flex: 2;
+          height: 8px;
+          background: rgba(255, 255, 255, 0.3);
+          border-radius: 4px;
+          overflow: hidden;
+
+          & .stat__fill {
+            height: 100%;
+            background: #e31837;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1245px) {
+    .about1__content .about1__title {
+    font-size: 22px;
+  }
+} 
+
+/* Responsive tweaks */
+@media (max-width: 992px) {
+  .about1__overlay {
+    justify-content: center;
+    padding-left: 0;
+  }
+  .about1__content .about1__title {
+    font-size: 16px;
+  }
+.about1__content .about1__desc {
+  font-size: 14px;
+}
+
+  .about1__content {
+    flex: 0 0 90%;
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .operation-section .heading {
+    font-size: 22px;
+  }
+}
+
+
+

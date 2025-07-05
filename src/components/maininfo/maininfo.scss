@@ -1,0 +1,175 @@
+/* src/components/maininfo/maininfo.scss */
+
+.maininfo-section {
+  background: #014681;
+  padding: 80px 20px;
+  color: #fff;
+
+  .maininfo-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 60px;
+    flex-wrap: wrap;
+
+    @media (max-width: 992px) {
+      flex-direction: column;
+      gap: 40px;
+    }
+  }
+
+  .image-collage {
+    position: relative;
+    flex: 1 1 45%;
+    min-height: 400px;
+
+    .frame {
+      position: absolute;
+      top: -20px;
+      left: -20px;
+      width: 100%;
+      height: 100%;
+      border: 8px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      z-index: 1;
+    }
+
+    .main-img {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+      transition: opacity 2s ease-in-out;
+      z-index: 2;
+      opacity: 0;
+    }
+  }
+
+  .content-area {
+    flex: 1 1 45%;
+    text-align: left;
+
+    @media (max-width: 992px) {
+      text-align: center;
+    }
+
+    .subtitle {
+      text-transform: uppercase;
+      color: #a0d3ff;
+      font-size: 14px;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .headline {
+      font-size: 2.5rem;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      color: #fff;
+    }
+
+    .intro {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .info-grid {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 40px;
+
+      @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+
+        .stat-icon { font-size: 2rem; color: #00c0f0; }
+        .stat-number { font-size: 1.75rem; font-weight: 700; color: #fff; margin:0; }
+        .stat-label { font-size:1rem; color:rgba(255,255,255,0.85); margin:0;}
+      }
+
+      .features-block ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        li {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          font-size: 1rem;
+          color: #fff;
+          margin-bottom: 16px;
+          .check-icon { color: #00c0f0; font-size: 1.2rem; }
+        }
+      }
+    }
+
+    .primary-btn {
+      background: #01b8ff;
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.3s, transform 0.3s;
+
+      &:hover {
+        opacity: 0.8;
+        transform: scale(1.05);
+      }
+
+      .btn-icon { font-size: 1rem; color: #fff; }
+    }
+  }
+}
+
+/* —————————————————————————————————————————————
+   Responsive tweak: ensure the image-collage never collapses
+————————————————————————————————————————————— */
+@media (max-width: 992px) {
+  .maininfo-container {
+    flex-direction: column;
+  }
+  .image-collage,
+  .content-area {
+    flex: none;
+    width: 100%;
+  }
+  .image-collage {
+    /* keep a good visible height on smaller screens */
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 600px) {
+  .image-collage {
+    min-height: 200px;
+  }
+  .maininfo-section .content-area .headline {
+    font-size: 16px;
+  }
+
+  .maininfo-section .content-area .intro {
+    font-size: 14px;
+  }
+
+  .maininfo-section .content-area .info-grid .stat-item .stat-label {
+    display: none;
+  }
+}
