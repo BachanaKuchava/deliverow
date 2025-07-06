@@ -1,78 +1,120 @@
-import React, { useState, useEffect } from "react";
+// src/components/services/Services.jsx
+
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
 import {
-FaBox, FaBoxOpen, FaBoxes
+  FaBox,
+  FaBoxOpen,
+  FaBoxes,
+  FaTruck
 } from "react-icons/fa";
-import "./services.scss";
 import { Link } from "react-router-dom";
-
-// Swap these imports for your actual image files:
-import trainImg from "../../assets/delivery1.png";
-import oceanImg from "../../assets/doortodoor.png";
-import roadImg from "../../assets/24door.png";
-import airImg from "../../assets/corporate.png";
-
-const services = [
-  {
-    img: trainImg,
-    icon: <FaBox />,
-    title: "სტანდარტული მომსახურება",
-    desc:
-      "სწრაფი მიწოდება მომდევნო სამუშაო დღეს, მიწოდება ხდება 12:00-დან 21:00-მდე."
-  },
-  {
-    img: oceanImg,
-    icon: <FaBoxOpen />,
-    title: "ექსპრესს მომსახურება",
-    desc:
-      "მიწოდება იმავე დღეს,  მიწოდება ხდება 11:00-დან 21:00-მდე."
-  },
-  {
-    img: roadImg,
-    icon: <FaBoxOpen />,
-    title: "ექსპრესს+",
-    desc:
-      "მიოწდება იმავე დღეს, Door to door-კურიერის მიერ კარამდე მიწოდება."
-  },
-  {
-    img: airImg,
-    icon: <FaBoxes />,
-    title: "კორპორატიული შეთავაზება",
-    desc:
-      "კორპორატიული შეთავაზებისთვის დაგვიკავშირდით, 15+ შეკვეთიდან."
-  }
-];
+import { LanguageContext } from "../../LanguageContext";
+import "./services.scss";
 
 export default function Services() {
-  const [visible, setVisible] = useState(false);
+  const { lang } = useContext(LanguageContext);
+  const [posts, setPosts] = useState([]);
+  const [t, setT] = useState({});
+  const [loading, setLoading] = useState(true);
 
+  // 1) Fetch translations
   useEffect(() => {
-    // trigger the appear animation once mounted
-    const t = setTimeout(() => setVisible(true), 20);
-    return () => clearTimeout(t);
-  }, []);
+    let mounted = true;
+    axios
+      .get(`https://deliverowapp.ge/api/${lang.toLowerCase()}/translations`)
+      .then((res) => {
+        if (!mounted) return;
+        const map = {};
+        res.data.forEach(({ alias, value }) => {
+          map[alias] = value;
+        });
+        setT(map);
+      })
+      .catch((err) => console.error("Translations fetch failed:", err));
+    return () => {
+      mounted = false;
+    };
+  }, [lang]);
+
+  // 2) Fetch the services on mount and whenever `lang` changes
+  useEffect(() => {
+    let mounted = true;
+    setLoading(true);
+    axios
+      .get(
+        `https://deliverowapp.ge/api/${lang.toLowerCase()}/blogCategory/services`
+      )
+      .then((res) => {
+        if (!mounted) return;
+        const data = res.data?.data?.category?.posts?.data || [];
+        setPosts(data);
+      })
+      .catch((err) => console.error("Failed loading services:", err))
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, [lang]);
+
+  // Helper to pick an icon per index
+  const iconFor = (i) => {
+    switch (i) {
+      case 0:
+        return <FaBox />;
+      case 1:
+        return <FaBoxOpen />;
+      case 2:
+        return <FaBoxes />;
+      default:
+        return <FaTruck />;
+    }
+  };
+
+  if (loading) return null; // or a spinner
 
   return (
-    <section className={`services-custom${visible ? " appear" : ""}`}>
+    <section className="services-custom appear">
       <div className="services-custom__grid">
-        {services.map((s, i) => (
-          <div className="services-custom__card" key={i}>
-            <div
-              className="services-custom__thumb"
-              style={{ backgroundImage: `url(${s.img})` }}
-            >
-              <div className="services-custom__icon">{s.icon}</div>
+        {posts.map((post, i) => {
+          // pick a good image (full-res)
+          const imgUrl =
+            post.image?.original ||
+            post.images?.[0]?.original_url ||
+            "";
+
+          // right-language HTML snippet for the description
+          const rawHtml = post.post?.[lang.toLowerCase()] || "";
+
+          return (
+            <div className="services-custom__card" key={post.id}>
+              <div
+                className="services-custom__thumb"
+                style={{ backgroundImage: `url(${imgUrl})` }}
+              >
+                <div className="services-custom__icon">
+                  {iconFor(i)}
+                </div>
+              </div>
+              <div className="services-custom__body">
+                <h3 className="services-custom__title">
+                  {post.title}
+                </h3>
+                <p
+                  className="services-custom__desc"
+                  dangerouslySetInnerHTML={{ __html: rawHtml }}
+                />
+                <Link to={`/${lang.toLowerCase()}/services/${post.slug}`}>
+                  <button className="services-custom__btn">
+                    {t.details || "ნახე დეტალები"}
+                  </button>
+                </Link>
+              </div>
             </div>
-            <div className="services-custom__body">
-              <h3 className="services-custom__title">{s.title}</h3>
-              <p className="services-custom__desc">{s.desc}</p>
-              <Link to="/singleservice">
-                <button className="services-custom__btn">
-                  ნახე დეტალები
-                </button>
-              </Link>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

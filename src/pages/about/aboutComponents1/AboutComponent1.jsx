@@ -1,11 +1,33 @@
-import React, { useRef, useEffect } from 'react';
-import './aboutcomponent1.scss'
+// src/components/aboutcomponent1/AboutComponent1.jsx
+import React, { useRef, useEffect, useContext, useState } from 'react';
+import axios from 'axios';
+import './aboutcomponent1.scss';
 import aboutVideo from '../../../assets/MZA1.mp4';
+import { LanguageContext } from '../../../LanguageContext';
 
 export default function AboutComponent1() {
   const sectionRef = useRef(null);
+  const { lang } = useContext(LanguageContext);
+  const [t, setT] = useState({});
 
-  // Parallax scroll effect
+  // 1) Fetch translations on lang change
+  useEffect(() => {
+    let mounted = true;
+    axios
+      .get(`https://deliverowapp.ge/api/${lang.toLowerCase()}/translations`)
+      .then(res => {
+        if (!mounted) return;
+        const map = {};
+        res.data.forEach(({ alias, value }) => {
+          map[alias] = value;
+        });
+        setT(map);
+      })
+      .catch(err => console.error('Translations fetch failed:', err));
+    return () => { mounted = false; };
+  }, [lang]);
+
+  // 2) Parallax scroll effect
   useEffect(() => {
     const handleScroll = () => {
       const scrolled = window.pageYOffset;
@@ -16,6 +38,25 @@ export default function AboutComponent1() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Helper: split "<label><number>%" into [label, number%]
+  const parseStat = (raw, fallbackLabel, fallbackValue) => {
+    const m = raw.match(/(.*?)(\d+%)/);
+    if (m) return [m[1], m[2]];
+    return [fallbackLabel, fallbackValue];
+  };
+
+  // Prepare stat values
+  const [stat1Label, stat1Value] = parseStat(
+    t.aboutustested || 'გატესტილი სისტემა100%',
+    'გატესტილი სისტემა',
+    '100%'
+  );
+  const [stat2Label, stat2Value] = parseStat(
+    t.aboutusbuissenss || 'კმაყოფილი ბიზნეს სექტორი100%',
+    'კმაყოფილი ბიზნეს სექტორი',
+    '100%'
+  );
 
   return (
     <section className="about1" ref={sectionRef}>
@@ -29,27 +70,36 @@ export default function AboutComponent1() {
       />
       <div className="about1__overlay">
         <div className="about1__content">
-          <p className="about1__subtitle">ჩვენს შესახებ: სისტემა & გუნდი</p>
+          <p className="about1__subtitle">
+            {t.aboutusintro || 'ჩვენს შესახებ: სისტემა & გუნდი'}
+          </p>
           <h2 className="about1__title">
-          იდეიდან რეალობამდე <br /> 
-          თანამედროვე საკურიერო სისტემა და მეტი.
+            {t.aboutustitle ||
+              'იდეიდან რეალობამდე\nგულმოდებული საკურიერო სისტემა და მეტი.'}
           </h2>
           <p className="about1__desc">
-            ჩვენ შევიმუშავებ , დავაპროექტეთ და შევქმენით ახალი თანამედროვე საკურიერო სისტემა თქვენთვის და თქვენი ბიზნესისთვის.
+            {t.aboutustext ||
+              'ჩვენ შევიმუშავეთ, დავაპროექტეთ და შევქმენით ახალი თანამედროვე საკურიერო სისტემა თქვენთვის და თქვენი ბიზნესისთვის.'}
           </p>
           <div className="about1__stats">
             <div className="stat">
-              <span className="stat__label">გატესტილი სისტემა</span>
-              <span className="stat__value">100%</span>
+              <span className="stat__label">{stat1Label}</span>
+              <span className="stat__value">{stat1Value}</span>
               <div className="stat__bar">
-                <div className="stat__fill" style={{ width: '82%' }} />
+                <div
+                  className="stat__fill"
+                  style={{ width: stat1Value }}
+                />
               </div>
             </div>
             <div className="stat">
-              <span className="stat__label">კმაყოფილი ბიზნეს სექტორი</span>
-              <span className="stat__value">100%</span>
+              <span className="stat__label">{stat2Label}</span>
+              <span className="stat__value">{stat2Value}</span>
               <div className="stat__bar">
-                <div className="stat__fill" style={{ width: '90%' }} />
+                <div
+                  className="stat__fill"
+                  style={{ width: stat2Value }}
+                />
               </div>
             </div>
           </div>

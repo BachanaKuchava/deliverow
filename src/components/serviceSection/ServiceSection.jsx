@@ -1,79 +1,136 @@
-import React from "react";
-import { FaBox, FaBoxOpen, FaBoxes, FaTruck } from "react-icons/fa";
+// src/components/serviceSection/ServiceSection.jsx
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
+import {
+  FaBox,
+  FaBoxOpen,
+  FaBoxes,
+  FaTruck,
+  FaArrowRight
+} from "react-icons/fa";
+import { LanguageContext } from "../../LanguageContext";
 import "./ServiceSection.scss";
 import { Link } from "react-router-dom";
 
-// Swap these for your real image paths:
-import img1 from "../../assets/delivery1.png"; // container ship
-import img2 from "../../assets/doortodoor.png"; // truck
-import img3 from "../../assets/24door.png"; // airplane ramp
-import img4 from "../../assets/corporate.png"; // train containers
-
-const services = [
-  {
-    img: img1,
-    icon: <FaBox />,
-    title: "სტანდარტული მომსახურება",
-    desc:
-      "სწრაფი მიწოდება მომდევნო სამუშაო დღეს, მიწოდება ხდება 12:00-დან 21:00-მდე.",
-  },
-  {
-    img: img2,
-    icon: <FaBoxOpen />,
-    title: "ექსპრესს მომსახურება",
-    desc:
-      "მიწოდება იმავე დღეს,  მიწოდება ხდება 11:00-დან 21:00-მდე.",
-  },
-  {
-    img: img3,
-    icon: <FaBoxOpen />,
-    title: "ექსპრესს+ ",
-    desc:
-      "მიოწდება იმავე დღეს, Door to door-კურიერის მიერ კარამდე მიწოდება.",
-  },
-  {
-    img: img4,
-    icon: <FaBoxes />,
-    title: "კორპორატიული შეთავაზება ",
-    desc:
-      "კორპორატიული შეთავაზებისთვის დაგვიკავშირდით, 15+ შეკვეთიდან.",
-  },
-];
-
 export default function ServiceSection() {
+  const { lang } = useContext(LanguageContext);
+  const [t, setT] = useState({});
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // 1) fetch translations
+  useEffect(() => {
+    let mounted = true;
+    axios
+      .get(`https://deliverowapp.ge/api/${lang.toLowerCase()}/translations`)
+      .then((res) => {
+        if (!mounted) return;
+        const map = {};
+        res.data.forEach(({ alias, value }) => {
+          map[alias] = value;
+        });
+        setT(map);
+      })
+      .catch((err) => console.error("Translations fetch failed:", err));
+    return () => {
+      mounted = false;
+    };
+  }, [lang]);
+
+  // 2) fetch services posts
+  useEffect(() => {
+    let mounted = true;
+    setLoading(true);
+    axios
+      .get(
+        `https://deliverowapp.ge/api/${lang.toLowerCase()}/blogCategory/services`
+      )
+      .then((res) => {
+        if (!mounted) return;
+        const data = res.data?.data?.category?.posts?.data || [];
+        setPosts(data);
+      })
+      .catch((err) => console.error("Services fetch failed:", err))
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, [lang]);
+
+  // pick icon by index
+  const iconFor = (i) => {
+    switch (i) {
+      case 0:
+        return <FaBox />;
+      case 1:
+        return <FaBoxOpen />;
+      case 2:
+        return <FaBoxes />;
+      default:
+        return <FaTruck />;
+    }
+  };
+
+  if (loading) {
+    return null; // or a spinner
+  }
+
   return (
     <section className="service-section">
       <div className="service-section__header">
         <div>
-          <p className="subtitle">ჩვენი საუკეთესო სერვისები</p>
+          <p className="subtitle">
+            {t.mainservicesintro || "ჩვენი საუკეთესო სერვისები"}
+          </p>
           <h2 className="title">
-           ყველა  საკურიერო სერვისი თქვენთვის
+            {t.mainservicestitle || "ყველა საკურიერო სერვისი თქვენთვის"}
           </h2>
         </div>
-        <Link to='services' className="all-btn">
-          ყველა სერვისი ➜
+        <Link
+          to={`/${lang.toLowerCase()}/services`}
+          className="all-btn"
+        >
+          {t.allservices || "ყველა სერვისი"} <FaArrowRight />
         </Link>
       </div>
 
       <div className="service-section__grid">
-        {services.map((s, i) => (
-          <div className="card" key={i}>
-            <div className="card-image">
-              <img src={s.img} alt={s.title} />
-              <div className="icon">{s.icon}</div>
-              <div className="overlay">
-                <Link to='/singleservice'>
-                <button className="overlay-btn">
-                  სრულად ➜
-                </button></Link>
+        {posts.map((post, i) => {
+          const imgUrl =
+            post.image?.original ||
+            post.images?.[0]?.original_url ||
+            "";
+          // pick the right language snippet
+          const rawHtml =
+            post.post?.[lang.toLowerCase()] || "<p></p>";
+          return (
+            <div className="card" key={post.id}>
+              <div className="card-image">
+                <img src={imgUrl} alt={post.title} />
+                <div className="icon">{iconFor(i)}</div>
+                <div className="overlay">
+                  <Link
+                    to={`/${lang.toLowerCase()}/singleservice`}
+                  >
+                    <button className="overlay-btn">
+                      {t.details || "დეტალურად"} ➜
+                    </button>
+                  </Link>
+                </div>
+              </div>
+              <div className="card-content">
+                <h3>{post.title}</h3>
+                <div
+                  className="desc"
+                  // render the HTML from the API
+                  dangerouslySetInnerHTML={{ __html: rawHtml }}
+                />
               </div>
             </div>
-            <div className="card-content">
-              <h3>{s.title}</h3>
-              <p>{s.desc}</p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

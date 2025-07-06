@@ -1,4 +1,7 @@
-import React from 'react';
+// src/components/mainBlog/MainBlog.jsx
+
+import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
 import { FaCalendarAlt, FaArrowRight } from 'react-icons/fa';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper';
@@ -6,44 +9,54 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import './mainBlog.scss';
 import { Link } from 'react-router-dom';
-
-const baseArticles = [
-  {
-    img: 'https://picsum.photos/400/300?random=21',
-    date: '25 Nov, 2024',
-    title: 'Importers achieve savings through the First Sale rule!',
-    excerpt:
-      'Road transpo arere tation cricuilar roley area coordinated trans portation they aw countries destination.',
-  },
-  {
-    img: 'https://picsum.photos/400/300?random=22',
-    date: '25 Nov, 2024',
-    title: 'The Future of Logistics Embracing Technology',
-    excerpt:
-      'Road transpo arere tation cricuilar roley area coordinated trans portation they aw countries destination.',
-  },
-  {
-    img: 'https://picsum.photos/400/300?random=23',
-    date: '25 Nov, 2024',
-    title: 'Green Logistics Solutions for a Greener Future',
-    excerpt:
-      'Road transpo arere tation cricuilar roley area coordinated trans portation they aw countries destination.',
-  },
-];
-
-// duplicate to ensure loop is smooth
-const articles = [...baseArticles, ...baseArticles];
+import { LanguageContext } from '../../LanguageContext';
 
 export default function MainBlog() {
+  const { lang } = useContext(LanguageContext);
+  const [t, setT] = useState({});
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    let m = true;
+    axios.get(`https://deliverowapp.ge/api/${lang.toLowerCase()}/translations`)
+      .then(r => {
+        if (!m) return;
+        const map = {};
+        r.data.forEach(({ alias, value }) => map[alias] = value);
+        setT(map);
+      })
+      .catch(console.error);
+    return () => { m = false };
+  }, [lang]);
+
+  useEffect(() => {
+    let m = true;
+    axios.get(`https://deliverowapp.ge/api/${lang.toLowerCase()}/blogCategory/blogss`)
+      .then(r => {
+        if (!m) return;
+        setPosts(r.data?.data?.category?.posts?.data || []);
+      })
+      .catch(console.error);
+    return () => { m = false };
+  }, [lang]);
+
+  // only duplicate if 2+ posts
+  const slides = posts.length > 1 ? [...posts, ...posts] : posts;
+
   return (
     <section className="mainblog-section">
       <div className="mainblog-header">
         <div className="mainblog-header-left">
-          <p className="subtitle">ბოლო სიახლეები</p>
-          <h2 className="title">ჩვენი ბოლო სიახლეები</h2>
+          <p className="subtitle">
+            {t.mainarticlenewslatest || 'ბოლო სიახლეები'}
+          </p>
+          <h2 className="title">
+            {t.mainlatestarticle || 'ჩვენი ბოლო სიახლეები'}
+          </h2>
         </div>
-        <Link to='blog' className="all-news btn">
-          ყველა სიახლე <FaArrowRight className="icon" />
+        <Link to={`/${lang.toLowerCase()}/blog`} className="all-news btn">
+          {t.allnews || 'ყველა სიახლე'}{' '}
+          <FaArrowRight className="icon" />
         </Link>
       </div>
 
@@ -51,8 +64,8 @@ export default function MainBlog() {
         modules={[Pagination, Autoplay]}
         spaceBetween={30}
         slidesPerView={3}
-        loop
-        autoplay={{ delay: 4000, disableOnInteraction: false }}
+        loop={posts.length > 1}
+        autoplay={posts.length > 1 ? { delay: 4000, disableOnInteraction: false } : false}
         pagination={{ clickable: true }}
         breakpoints={{
           0: { slidesPerView: 1 },
@@ -61,24 +74,40 @@ export default function MainBlog() {
         }}
         className="mainblog-slider"
       >
-        {articles.map((art, idx) => (
-          <SwiperSlide key={idx}>
-            <div className="blog-card">
-              <img src={art.img} alt={art.title} />
-              <div className="card-content">
-                <div className="card-date">
-                  <FaCalendarAlt className="date-icon" />
-                  <span>{art.date}</span>
+        {slides.map((post, idx) => {
+          const img =
+            post.image?.original ||
+            post.images?.[0]?.original_url ||
+            'https://via.placeholder.com/400x300?text=No+Image';
+          const date = new Date(post.published_at)
+            .toLocaleDateString(lang === 'KA' ? 'ka-GE' : 'en-US',
+              { day: '2-digit', month: 'short', year: 'numeric' });
+          const raw = post.post?.[lang.toLowerCase()] || '';
+          const text = raw.replace(/<[^>]+>/g, '');
+          const excerpt = text.length > 100 ? text.slice(0, 100).trimEnd() + '...' : text;
+
+          return (
+            <SwiperSlide key={`${post.id}-${idx}`}>
+              <div className="blog-card">
+                <img src={img} alt={post.title} />
+                <div className="card-content">
+                  <div className="card-date">
+                    <FaCalendarAlt className="date-icon" />
+                    <span>{date}</span>
+                  </div>
+                  <h3 className="card-title">{post.title}</h3>
+                  <p className="card-excerpt">{excerpt}</p>
+                  <Link
+                    to={`/${lang.toLowerCase()}/article/${post.slug}`}
+                    className="read-more btn"
+                  >
+                    {t.details || 'დეტალურად'} <FaArrowRight className="icon" />
+                  </Link>
                 </div>
-                <h3 className="card-title">{art.title}</h3>
-                <p className="card-excerpt">{art.excerpt}</p>
-                <Link to='/article' className="read-more btn">
-                  დეტალურად <FaArrowRight className="icon" />
-                </Link>
               </div>
-            </div>
-          </SwiperSlide>
-        ))}
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
     </section>
   );

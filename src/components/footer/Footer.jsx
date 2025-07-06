@@ -1,4 +1,6 @@
-import React from 'react';
+// src/components/footer/Footer.jsx
+import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
 import {
   FaMapMarkerAlt,
   FaPhone,
@@ -9,19 +11,41 @@ import {
   FaInstagram,
   FaYoutube
 } from 'react-icons/fa';
+import { LanguageContext } from '../../LanguageContext';
 import './footer.scss';
 
 export default function Footer() {
+  const { lang } = useContext(LanguageContext);
+  const [t, setT] = useState({});
+
+  // Fetch all translations on language change
+  useEffect(() => {
+    let mounted = true;
+    axios
+      .get(`https://deliverowapp.ge/api/${lang.toLowerCase()}/translations`)
+      .then(res => {
+        if (!mounted) return;
+        const map = {};
+        res.data.forEach(({ alias, value }) => {
+          map[alias] = value;
+        });
+        setT(map);
+      })
+      .catch(err => console.error('Footer translations failed:', err));
+    return () => {
+      mounted = false;
+    };
+  }, [lang]);
+
   return (
     <footer className="footer">
       <div className="footer__top">
         <div className="footer__col footer__col--about">
           <div className="footer__logo">Deliverow</div>
           <p className="footer__desc">
-            თქვენ თავდაჯრებულად შეგიძლიათ აგვირჩიოთ ჩვენ, როდესაც გჭირდებათ საკურიერო სერვისი
+            {t.footertext || 'თქვენ თავდაჯრებულად შეგიძლიათ აგვირჩიოთ ჩვენ, როდესაც გჭირდებათ საკურიერო სერვისი'}
           </p>
 
-          {/* REPLACED subscribe block with map */}
           <div className="footer__map">
             <iframe
               title="Deliverow Location"
@@ -31,11 +55,15 @@ export default function Footer() {
             />
           </div>
 
-          <p className="footer__note">დ.გურამიშვილის გამზ. 17ბ</p>
+          <p className="footer__note">
+            {t.office || 'ოფისის მისამართი'}:&nbsp;{t.location || 'დ.გურამიშვილის გამზ. 17ბ'}
+          </p>
         </div>
 
         <div className="footer__col footer__col--services">
-          <h4 className="footer__heading">ჩვენი სერვისები</h4>
+          <h4 className="footer__heading">
+            {t.footerservices || 'ჩვენი სერვისები'}
+          </h4>
           <ul className="footer__list">
             <li>სტანდარტული მომსახურება</li>
             <li>ექსპრესს მომსახურება</li>
@@ -45,30 +73,39 @@ export default function Footer() {
         </div>
 
         <div className="footer__col footer__col--links">
-          <h4 className="footer__heading">გვერდები</h4>
+          <h4 className="footer__heading">
+            {t.footerpages || 'გვერდები'}
+          </h4>
           <ul className="footer__list">
-            <li>How It’s Work</li>
-            <li>Partners</li>
-            <li>Testimonials</li>
-            <li>Case Studies</li>
-            <li>Pricing</li>
+            <li>Home</li>
+            <li>About</li>
+            <li>Services</li>
+            <li>Blog</li>
+            <li>Contact</li>
           </ul>
         </div>
 
         <div className="footer__col footer__col--info">
-          <h4 className="footer__heading">ინფორმაცია</h4>
+          <h4 className="footer__heading">
+            {t.footerinfo || 'ინფორმაცია'}
+          </h4>
           <ul className="footer__info-list">
             <li>
               <FaMapMarkerAlt className="info-icon" />
-              <span>დ.გურამიშვილის გამზ. 17ბ</span>
+              <span>{t.location || 'დ.გურამიშვილის გამზ. 17ბ'}</span>
             </li>
             <li>
               <FaPhone className="info-icon" />
-              <span>(+995) 597-93-58-16</span>
+              <span>
+                {t.Hotline || 'ცხელი ხაზი'}:&nbsp;(+
+                995) 597-93-58-16
+              </span>
             </li>
             <li>
               <FaClock className="info-icon" />
-              <span>ორ – კვ: 8:00 – 22:00</span>
+              <span>
+                {t.time || 'ორშ-კვ'}:&nbsp;8:00 – 22:00
+              </span>
             </li>
           </ul>
         </div>
@@ -77,21 +114,24 @@ export default function Footer() {
       <div className="footer__divider" />
 
       <div className="footer__bottom">
-        <p className="footer__copy">პროდუქტი ეკუთვნის ©Deliverow | ყველა უფლება დაცულია</p>
+        <p className="footer__copy">
+          {t.footerfirstundertext || 'პროდუქტი ეკუთვნის'} ©Deliverow |{' '}
+          {t.footerrights || 'ყველა უფლება დაცულია'}
+        </p>
         <div className="footer__social">
-          <a href="https://www.facebook.com/deliverow" target="blank" aria-label="Facebook">
+          <a href="https://www.facebook.com/deliverow" target="_blank" rel="noopener noreferrer">
             <FaFacebookF />
           </a>
-          <a href="https://x.com/?lang=en" target="blank" aria-label="Twitter">
+          <a href="https://x.com/?lang=en" target="_blank" rel="noopener noreferrer">
             <FaTwitter />
           </a>
-          <a href="https://www.whatsapp.com/" target="blank" aria-label="WhatsApp">
+          <a href="https://www.whatsapp.com/" target="_blank" rel="noopener noreferrer">
             <FaWhatsapp />
           </a>
-          <a href="https://www.instagram.com/" target="blank" aria-label="Instagram">
+          <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">
             <FaInstagram />
           </a>
-          <a href="https://www.youtube.com" target="blank" aria-label="YouTube">
+          <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer">
             <FaYoutube />
           </a>
         </div>
