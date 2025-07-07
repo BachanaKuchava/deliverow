@@ -1,5 +1,4 @@
 // src/components/header/Header.jsx
-
 import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import {
@@ -32,7 +31,7 @@ export default function Header() {
   const menuRef                     = useRef(null);
   const location                    = useLocation();
 
-  // 1) Fetch the header translations whenever `lang` changes
+  // 1) Fetch translations whenever `lang` changes
   useEffect(() => {
     let mounted = true;
     axios
@@ -77,7 +76,7 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", onOutside);
   }, [mobileOpen]);
 
-  // 5) Toggle between KA / EN
+  // 5) Language toggle
   const toggleLang = () => setLang(lang === "EN" ? "KA" : "EN");
 
   return (
@@ -153,10 +152,18 @@ export default function Header() {
               <Link to={`/${lang.toLowerCase()}`}>
                 {t.mainpage || "მთავარი"}
               </Link>
-              <Link to={`/${lang.toLowerCase()}/about`}>ჩვენს შესახებ</Link>
-              <Link to={`/${lang.toLowerCase()}/services`}>სერვისები</Link>
-              <Link to={`/${lang.toLowerCase()}/blog`}>სიახლეები</Link>
-              <Link to={`/${lang.toLowerCase()}/contact`}>კონტაქტი</Link>
+              <Link to={`/${lang.toLowerCase()}/about`}>
+                {t.menuabout || "ჩვენს შესახებ"}
+              </Link>
+              <Link to={`/${lang.toLowerCase()}/services`}>
+                {t.menuservices || "სერვისები"}
+              </Link>
+              <Link to={`/${lang.toLowerCase()}/blog`}>
+                {t.menublog || "სიახლეები"}
+              </Link>
+              <Link to={`/${lang.toLowerCase()}/contact`}>
+                {t.menucontacts || "კონტაქტი"}
+              </Link>
             </nav>
 
             <div className="right-block">
@@ -213,22 +220,22 @@ export default function Header() {
             </li>
             <li>
               <Link to={`/${lang.toLowerCase()}/about`} onClick={handleMobileClose}>
-                ჩვენს შესახებ
+                {t.menuabout || "ჩვენს შესახებ"}
               </Link>
             </li>
             <li>
               <Link to={`/${lang.toLowerCase()}/services`} onClick={handleMobileClose}>
-                სერვისები
+                {t.menuservices || "სერვისები"}
               </Link>
             </li>
             <li>
               <Link to={`/${lang.toLowerCase()}/blog`} onClick={handleMobileClose}>
-                სიახლეები
+                {t.menublog || "სიახლეები"}
               </Link>
             </li>
             <li>
               <Link to={`/${lang.toLowerCase()}/contact`} onClick={handleMobileClose}>
-                კონტაქტი
+                {t.menucontacts || "კონტაქტი"}
               </Link>
             </li>
           </ul>

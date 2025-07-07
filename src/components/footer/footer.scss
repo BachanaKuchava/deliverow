@@ -153,3 +153,13 @@
   .footer__top { flex-direction: column; }
   .footer__bottom { flex-direction: column; gap: 16px; }
 }
+/* keep all footer links white, highlight on hover */
+.footer__col--services .footer__list a,
+.footer__col--links    .footer__list a {
+  color: #fff;
+  text-decoration: none;
+}
+.footer__col--services .footer__list a:hover,
+.footer__col--links    .footer__list a:hover {
+  color: #00c0f0;
+}
