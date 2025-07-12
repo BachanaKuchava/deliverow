@@ -1,4 +1,5 @@
 // src/components/serviceSection/ServiceSection.jsx
+
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import {
@@ -102,7 +103,6 @@ export default function ServiceSection() {
             post.image?.original ||
             post.images?.[0]?.original_url ||
             "";
-          // pick the right language snippet
           const rawHtml =
             post.post?.[lang.toLowerCase()] || "<p></p>";
           return (
@@ -112,7 +112,7 @@ export default function ServiceSection() {
                 <div className="icon">{iconFor(i)}</div>
                 <div className="overlay">
                   <Link
-                    to={`/${lang.toLowerCase()}/singleservice`}
+                    to={`/${lang.toLowerCase()}/services/${post.slug}`}
                   >
                     <button className="overlay-btn">
                       {t.details || "დეტალურად"} ➜
@@ -124,7 +124,6 @@ export default function ServiceSection() {
                 <h3>{post.title}</h3>
                 <div
                   className="desc"
-                  // render the HTML from the API
                   dangerouslySetInnerHTML={{ __html: rawHtml }}
                 />
               </div>

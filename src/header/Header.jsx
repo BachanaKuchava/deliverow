@@ -1,4 +1,3 @@
-// src/components/header/Header.jsx
 import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import {
@@ -31,7 +30,7 @@ export default function Header() {
   const menuRef                     = useRef(null);
   const location                    = useLocation();
 
-  // 1) Fetch translations whenever `lang` changes
+  // 1) Fetch translations on `lang` change
   useEffect(() => {
     let mounted = true;
     axios
@@ -55,7 +54,7 @@ export default function Header() {
     return () => clearTimeout(tid);
   }, [location]);
 
-  // 3) Close animation for mobile menu
+  // 3) Mobile menu close animation
   const handleMobileClose = () => {
     setClosing(true);
     setTimeout(() => {
@@ -76,7 +75,7 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", onOutside);
   }, [mobileOpen]);
 
-  // 5) Language toggle
+  // 5) Toggle language
   const toggleLang = () => setLang(lang === "EN" ? "KA" : "EN");
 
   return (
@@ -138,7 +137,7 @@ export default function Header() {
             <div className="mobilelogo">
               <img src={logo} className="logo-icon-mobile" />
               <Link to={`/${lang.toLowerCase()}`} className="logolink mobilelogolink">
-                {t.mainpage || "მთავარი"}
+               Deliverow
               </Link>
             </div>
 
@@ -149,21 +148,11 @@ export default function Header() {
             </div>
 
             <nav className="menu">
-              <Link to={`/${lang.toLowerCase()}`}>
-                {t.mainpage || "მთავარი"}
-              </Link>
-              <Link to={`/${lang.toLowerCase()}/about`}>
-                {t.menuabout || "ჩვენს შესახებ"}
-              </Link>
-              <Link to={`/${lang.toLowerCase()}/services`}>
-                {t.menuservices || "სერვისები"}
-              </Link>
-              <Link to={`/${lang.toLowerCase()}/blog`}>
-                {t.menublog || "სიახლეები"}
-              </Link>
-              <Link to={`/${lang.toLowerCase()}/contact`}>
-                {t.menucontacts || "კონტაქტი"}
-              </Link>
+              <Link to={`/${lang.toLowerCase()}`}>{t.mainpage || "მთავარი"}</Link>
+              <Link to={`/${lang.toLowerCase()}/about`}>{t.menuabout || "ჩვენს შესახებ"}</Link>
+              <Link to={`/${lang.toLowerCase()}/services`}>{t.menuservices || "სერვისები"}</Link>
+              <Link to={`/${lang.toLowerCase()}/blog`}>{t.menublog || "სიახლეები"}</Link>
+              <Link to={`/${lang.toLowerCase()}/contact`}>{t.menucontacts || "კონტაქტი"}</Link>
             </nav>
 
             <div className="right-block">
@@ -184,9 +173,7 @@ export default function Header() {
                   <span className="phone-label">
                     {t.Hotline || "ცხელი ხაზი"}:
                   </span>
-                  <span className="phone-number">
-                    (+995) 597-93-58-16
-                  </span>
+                  <span className="phone-number">(+995) 597-93-58-16</span>
                 </div>
               </div>
 
@@ -200,10 +187,7 @@ export default function Header() {
 
       {/* MOBILE MENU PANEL */}
       {mobileOpen && (
-        <div
-          ref={menuRef}
-          className={`mobile-menu${closing ? " closing" : ""}`}
-        >
+        <div ref={menuRef} className={`mobile-menu${closing ? " closing" : ""}`}>
           <button
             className="mobile-menu__close"
             onClick={handleMobileClose}
@@ -213,6 +197,17 @@ export default function Header() {
           </button>
 
           <ul className="mobile-menu__nav">
+            {/* desktop‐style language toggle */}
+            <li>
+              <button
+                className="lang-selector__btn"
+                onClick={toggleLang}
+                aria-label="Toggle Language"
+              >
+                <FaGlobe />
+                <span className="lang-selector__current">{lang}</span>
+              </button>
+            </li>
             <li>
               <Link to={`/${lang.toLowerCase()}`} onClick={handleMobileClose}>
                 {t.mainpage || "მთავარი"}
@@ -238,6 +233,16 @@ export default function Header() {
                 {t.menucontacts || "კონტაქტი"}
               </Link>
             </li>
+            {/* desktop‐style login button */}
+            <li>
+              <Link
+                to={`/${lang.toLowerCase()}/login`}
+                className="login-button"
+                onClick={handleMobileClose}
+              >
+                <FaUser className="login-icon" /> {t.login || "შესვლა"}
+              </Link>
+            </li>
           </ul>
 
           <div className="mobile-menu__socials">
@@ -256,7 +261,7 @@ export default function Header() {
           <FaTimes />
         </button>
         <div className="help-panel__logo"><span>Deliverow</span></div>
-        <hr/>
+        <hr />
         <h4>{t.office || "ოფისის მისამართი"}</h4>
         <p>{t.location || "დ.გურამიშვილის გამზ. 17ბ"}</p>
         <p>თბილისი საქართველო</p>

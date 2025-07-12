@@ -557,3 +557,52 @@
   opacity: 1;
   transform: translateY(0);
 }
+/* —————————————————————————————————————————————
+   Inject desktop‐style Lang & Login into Burger
+————————————————————————————————————————————— */
+.mobile-menu__nav .lang-selector__btn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.mobile-menu__nav .lang-selector__btn svg:last-child {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.mobile-menu__nav .lang-selector__btn:hover svg:last-child {
+  opacity: 1;
+}
+
+.mobile-menu__nav .lang-selector__current {
+  font-weight: 600;
+}
+
+.mobile-menu__nav .login-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #23a8df;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: 7px;
+  padding: 0.65rem 1.35rem;
+  text-decoration: none;
+  transition: background 0.18s;
+}
+
+.mobile-menu__nav .login-button .login-icon {
+  font-size: 1.15rem;
+}
+
+.mobile-menu__nav .login-button:hover {
+  background: #014681;
+}
