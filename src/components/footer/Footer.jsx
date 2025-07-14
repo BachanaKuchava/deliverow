@@ -135,8 +135,7 @@ export default function Footer() {
 
       <div className="footer__bottom">
         <p className="footer__copy">
-          {t.footerfirstundertext || 'პროდუქტი ეკუთვნის'} ©Deliverow | 
-          {t.footerrights || 'ყველა უფლება დაცულია'}
+          {t.footerfirstundertext || 'პროდუქტი ეკუთვნის'} ©Deliverow | {t.footerrights || 'ყველა უფლება დაცულია'}
         </p>
         <div className="footer__social">
           <a href="https://www.facebook.com/deliverow" target="_blank" rel="noopener noreferrer"><FaFacebookF/></a>
