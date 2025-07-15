@@ -18,7 +18,7 @@ export default function Blog() {
     setLoading(true)
 
     axios
-      .get(`https://deliverowapp.ge/api/${lang.toLowerCase()}/blogCategory/blogss`)
+      .get(`https://deliverowapp.ge/api/${lang.toLowerCase()}/blogCategory/siakhleebi`)
       .then(res => {
         if (!mounted) return
         setPosts(res.data.data.category.posts.data || [])

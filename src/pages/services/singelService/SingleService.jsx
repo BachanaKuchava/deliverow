@@ -41,7 +41,7 @@ export default function SingleService() {
 
     axios
       .get(
-        `https://deliverowapp.ge/api/${lang.toLowerCase()}/blogCategory/services`
+        `https://deliverowapp.ge/api/${lang.toLowerCase()}/blogCategory/servisebi`
       )
       .then((res) => {
         if (!mounted) return;

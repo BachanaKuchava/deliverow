@@ -41,7 +41,7 @@ export default function Footer() {
   useEffect(() => {
     let mounted = true;
     axios
-      .get(`https://deliverowapp.ge/api/${lang.toLowerCase()}/blogCategory/services`)
+      .get(`https://deliverowapp.ge/api/${lang.toLowerCase()}/blogCategory/servisebi`)
       .then(res => {
         if (!mounted) return;
         // the posts array

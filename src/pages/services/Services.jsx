@@ -43,7 +43,7 @@ export default function Services() {
     setLoading(true);
     axios
       .get(
-        `https://deliverowapp.ge/api/${lang.toLowerCase()}/blogCategory/services`
+        `https://deliverowapp.ge/api/${lang.toLowerCase()}/blogCategory/servisebi`
       )
       .then((res) => {
         if (!mounted) return;

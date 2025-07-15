@@ -1,5 +1,4 @@
 // src/components/serviceSection/ServiceSection.jsx
-
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import {
@@ -44,7 +43,7 @@ export default function ServiceSection() {
     setLoading(true);
     axios
       .get(
-        `https://deliverowapp.ge/api/${lang.toLowerCase()}/blogCategory/services`
+        `https://deliverowapp.ge/api/${lang.toLowerCase()}/blogCategory/servisebi`
       )
       .then((res) => {
         if (!mounted) return;
@@ -63,57 +62,45 @@ export default function ServiceSection() {
   // pick icon by index
   const iconFor = (i) => {
     switch (i) {
-      case 0:
-        return <FaBox />;
-      case 1:
-        return <FaBoxOpen />;
-      case 2:
-        return <FaBoxes />;
-      default:
-        return <FaTruck />;
+      case 0: return <FaBox />;
+      case 1: return <FaBoxOpen />;
+      case 2: return <FaBoxes />;
+      default: return <FaTruck />;
     }
   };
 
   if (loading) {
-    return null; // or a spinner
+    return null; // ან დატვირთვის სპინერი
   }
 
   return (
     <section className="service-section">
       <div className="service-section__header">
         <div>
-          <p className="subtitle">
-            {t.mainservicesintro || "ჩვენი საუკეთესო სერვისები"}
-          </p>
-          <h2 className="title">
-            {t.mainservicestitle || "ყველა საკურიერო სერვისი თქვენთვის"}
-          </h2>
+          <p className="subtitle">{t.mainservicesintro || "ჩვენი საუკეთესო სერვისები"}</p>
+          <h2 className="title">{t.mainservicestitle || "ყველა საკურიერო სერვისი თქვენთვის"}</h2>
         </div>
-        <Link
-          to={`/${lang.toLowerCase()}/services`}
-          className="all-btn"
-        >
+        <Link to={`/${lang.toLowerCase()}/services`} className="all-btn">
           {t.allservices || "ყველა სერვისი"} <FaArrowRight />
         </Link>
       </div>
 
       <div className="service-section__grid">
         {posts.map((post, i) => {
-          const imgUrl =
-            post.image?.original ||
-            post.images?.[0]?.original_url ||
-            "";
+          const imgUrl = post.image?.original || post.images?.[0]?.original_url || "";
+          // *** აქ ვამოწმებთ რა ტიპის არის post.post ***
           const rawHtml =
-            post.post?.[lang.toLowerCase()] || "<p></p>";
+            typeof post.post === "object"
+              ? post.post[lang.toLowerCase()]
+              : post.post;
+
           return (
             <div className="card" key={post.id}>
               <div className="card-image">
                 <img src={imgUrl} alt={post.title} />
                 <div className="icon">{iconFor(i)}</div>
                 <div className="overlay">
-                  <Link
-                    to={`/${lang.toLowerCase()}/services/${post.slug}`}
-                  >
+                  <Link to={`/${lang.toLowerCase()}/services/${post.slug}`}>
                     <button className="overlay-btn">
                       {t.details || "დეტალურად"} ➜
                     </button>

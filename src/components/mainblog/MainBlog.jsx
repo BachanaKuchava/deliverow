@@ -35,7 +35,7 @@ export default function MainBlog() {
   useEffect(() => {
     let m = true;
     axios
-      .get(`https://deliverowapp.ge/api/${lang.toLowerCase()}/blogCategory/blogss`)
+      .get(`https://deliverowapp.ge/api/${lang.toLowerCase()}/blogCategory/siakhleebi`)
       .then(r => {
         if (!m) return;
         setPosts(r.data?.data?.category?.posts?.data || []);
