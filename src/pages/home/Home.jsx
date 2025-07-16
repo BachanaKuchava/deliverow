@@ -8,16 +8,18 @@ import CreativeSlider from "../../components/sliders/swiper/Swiper";
 import Operation from "../../components/operation/Operation";
 import MainInfo from "../../components/maininfo/MainInfo";
 import MainBlog from "../../components/mainblog/MainBlog";
+import MapPricing from "../../components/mapsection/MainMapComponent";
 
 
 function Home() {
     return ( <>
     <MainSlider />
-    <MainAbout />
+    {/* <MainAbout /> */}
     <ServiceSection />
     {/* <CreativeSlider />
     <Operation /> */}
-    <MainInfo />
+    {/* <MainInfo /> */}
+    <MapPricing />
     <MainBlog />
     </> );
 }

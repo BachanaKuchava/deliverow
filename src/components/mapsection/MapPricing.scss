@@ -1,0 +1,149 @@
+/* src/components/MapPricing/MapPricing.scss */
+@import url("https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;700&display=swap");
+
+.map-pricing {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  font-family: "Fira Sans", sans-serif;
+  overflow: hidden;
+
+  &__bg {
+    position: absolute;
+    inset: 0;
+    background: url("../../assets/mapback.png") center/cover no-repeat;
+    filter: brightness(0.3);
+    z-index: 0;
+  }
+
+  &__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;                   /* tighter gap */
+    padding: 2rem;
+    justify-items: center;
+    align-content: center;
+    height: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+
+    max-width: 1100px;           /* constrain width */
+    margin: 0 auto;              /* center horizontally */
+  }
+
+  &__card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    padding: 1.25rem;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    width: 100%;
+    max-width: 200px;            /* limit card width */
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    .map-pricing__city-name {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    .map-pricing__more {
+      font-weight: 500;
+      color: #014681;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      font-size: 0.9rem;
+    }
+  }
+
+  &__popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+  }
+
+  &__popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80vw;
+    max-width: 580px;            /* slightly narrower */
+    max-height: 80vh;
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.8rem;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+    z-index: 2;
+    overflow-y: auto;
+    box-sizing: border-box;
+
+    &__close {
+      position: absolute;
+      top: 0.8rem;
+      right: 0.8rem;
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      color: #666;
+      transition: color 0.2s;
+
+      &:hover {
+        color: #333;
+      }
+    }
+
+    &__title {
+      margin: 0 0 1rem;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #17175d;
+      text-align: center;
+    }
+
+    &__table {
+      width: 100%;
+      border-collapse: collapse;
+
+      th,
+      td {
+        padding: 0.6rem;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+        font-size: 0.9rem;
+      }
+      th {
+        background: #f5f5f5;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .map-pricing__grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    padding: 1rem;
+  }
+  .map-pricing__card {
+    max-width: 160px;
+    padding: 1rem;
+    .map-pricing__city-name {
+      font-size: 1rem;
+    }
+    .map-pricing__more {
+      font-size: 0.85rem;
+    }
+  }
+}

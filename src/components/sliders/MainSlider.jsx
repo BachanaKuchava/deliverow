@@ -4,13 +4,25 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { LanguageContext } from "../../LanguageContext";
 import { Link } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import video1 from "../../assets/video1.mp4";
 import "./slider.scss";
 
 export default function MainHero() {
   const { lang } = useContext(LanguageContext);
-  const [t, setT]         = useState({});
+  const [t, setT] = useState({});
   const [loaded, setLoaded] = useState(false);
 
+  // index of which title to show
+  const [titleIdx, setTitleIdx] = useState(0);
+  const titleKeys = [
+    "mainslidertitle",
+    "mainslidertitle2",
+    "mainslidertitle3"
+  ];
+  const titles = titleKeys.map((key) => t[key] || "");
+
+  // fetch translations
   useEffect(() => {
     let mounted = true;
     setLoaded(false);
@@ -25,9 +37,7 @@ export default function MainHero() {
         });
         setT(map);
       })
-      .catch((err) => {
-        console.error("Translations fetch failed:", err);
-      })
+      .catch((err) => console.error("Translations fetch failed:", err))
       .finally(() => {
         if (mounted) setLoaded(true);
       });
@@ -37,30 +47,48 @@ export default function MainHero() {
     };
   }, [lang]);
 
+  // rotate titles every 3s
+  useEffect(() => {
+    if (!loaded) return;
+    setTitleIdx(0);
+    const iv = setInterval(() => {
+      setTitleIdx((i) => (i + 1) % titles.length);
+    }, 3000);
+    return () => clearInterval(iv);
+  }, [loaded, titles.join("")]);
+
   return (
     <section className={`hero${loaded ? " hero--loaded" : ""}`}>
+      <video className="hero__video" autoPlay loop muted playsInline>
+        <source src={video1} type="video/mp4" />
+      </video>
       <div className="hero__overlay" />
 
       <div className="hero__content">
-        {/* subtitle from translations */}
         <p className="hero__subtitle">
           {t.mainsliderintro || "სწრაფი & დაცული მიწოდება"}
         </p>
 
-        {/* title from translations */}
-        {loaded && (
-          <h1 className="hero__title">
-            {t.mainslidertitle || "დროა, სწრაფ და უსაფრთხო მიწოდების სერვისზე გადასვლის"}
-          </h1>
-        )}
+        <AnimatePresence mode="wait">
+          {loaded && (
+            <motion.h1
+              key={titleIdx}
+              className="hero__title"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+            >
+              {titles[titleIdx] || t.mainslidertitle}
+            </motion.h1>
+          )}
+        </AnimatePresence>
 
-        {/* under-text from translations */}
         <p className="hero__text">
           {t.mainsliderundertext ||
             "ნახეთ, როგორ შეგვიძლია ვმართოთ თქვენი მიწოდება უფრო სწრაფად, ხელმისაწვდომ ფასად და უსაფრთხოდ."}
         </p>
 
-        {/* button label from translations */}
         <Link to={`/${lang.toLowerCase()}/services`} className="hero__btn">
           {t.mainsliderbutton || "ნახე სრულად"}
           <span className="hero__btn-arrow">➜</span>
