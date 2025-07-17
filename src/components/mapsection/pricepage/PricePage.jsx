@@ -1,10 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { LanguageContext } from "../../LanguageContext";
-import "./MapPricing.scss";
+import React, { useState } from "react";
+import "./pricePage.scss";
 
-export default function MapPricing() {
-  // Hard‑coded city pricing data
+export default function PricePage() {
   const cities = [
     { name: "თბილისი",      prices: ["8.42₾","9.20₾","11.22₾","13.34₾","21.21₾","25.24₾","51.85₾","77.13₾"] },
     { name: "ბათუმი",       prices: ["8.42₾","9.20₾","11.22₾","13.34₾","21.21₾","25.24₾","51.85₾","77.13₾"] },
@@ -32,77 +29,52 @@ export default function MapPricing() {
   ];
 
   const [selectedCity, setSelectedCity] = useState(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const navigate = useNavigate();
-  const { lang } = useContext(LanguageContext);
-
-  useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth <= 768);
-    onResize();
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
 
   return (
-    <div className="map-pricing">
-      <div className="map-pricing__bg" />
+    <div className="price-page">
+      <h1 className="price-page__title">ღირებულებები ყველა რეგიონში</h1>
 
-      <div className="map-pricing__header">
-        <h2>ფასები რეგიონებში</h2>
-      </div>
-
-      <div className="map-pricing__grid">
-        {cities.map((city) => (
+      <div className="price-page__grid">
+        {cities.map(city => (
           <div
             key={city.name}
-            className="map-pricing__card"
+            className="price-page__card"
             onClick={() => setSelectedCity(city)}
           >
-            <span className="map-pricing__city-name">{city.name}</span>
-            <span className="map-pricing__more">
-              ნახე ფასები <span className="map-pricing__more-icon">➜</span>
-            </span>
+            <span className="price-page__city">{city.name}</span>
+            <span className="price-page__see">იხილე ფასები ➜</span>
           </div>
         ))}
       </div>
 
-      {isMobile && cities.length > 4 && (
-        <button
-          className="map-pricing__show-more"
-          onClick={() => navigate(`/${lang.toLowerCase()}/pricepage`)}
-        >
-          Show More
-        </button>
-      )}
-
       {selectedCity && (
         <>
           <div
-            className="map-pricing__popup-overlay"
+            className="price-page__overlay"
             onClick={() => setSelectedCity(null)}
           />
-          <div className="map-pricing__popup">
+          <div className="price-page__popup">
             <button
-              className="map-pricing__popup__close"
+              className="price-page__popup-close"
               onClick={() => setSelectedCity(null)}
             >
               &times;
             </button>
-            <h2 className="map-pricing__popup__title">
+            <h2 className="price-page__popup-title">
               {selectedCity.name} — ფასები
             </h2>
-            <table className="map-pricing__popup__table">
+            <table className="price-page__table">
               <thead>
                 <tr>
-                  {categories.map((cat) => (
-                    <th key={cat}>{cat}</th>
-                  ))}
+                  {categories.map(cat => <th key={cat}>{cat}</th>)}
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  {selectedCity.prices.map((p, i) => (
-                    <td key={i}>{p}</td>
+                  {selectedCity.prices.map((p,i) => (
+                    <td key={i} data-label={categories[i]}>
+                      {p}
+                    </td>
                   ))}
                 </tr>
               </tbody>

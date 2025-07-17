@@ -1,47 +1,75 @@
-/* src/components/MapPricing/MapPricing.scss */
 @import url("https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;700&display=swap");
 
 .map-pricing {
   position: relative;
-  height: 100vh;
   width: 100%;
   font-family: "Fira Sans", sans-serif;
   overflow: hidden;
+  padding: 2rem 0;
 
+  /* Background map */
   &__bg {
     position: absolute;
     inset: 0;
-    background: url("../../assets/mapback.png") center/cover no-repeat;
-    filter: brightness(0.3);
+    background: url("../../assets/mapback2.png") center/cover no-repeat;
+    pointer-events: none; /* allow clicks through */
     z-index: 0;
   }
 
+  /* Header */
+  &__header {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    h2 {
+      font-size: 2rem;
+      color: #014681;
+      font-weight: 700;
+    }
+  }
+
+  /* Grid of cards */
   &__grid {
     position: relative;
     z-index: 1;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1rem;                   /* tighter gap */
-    padding: 2rem;
+    gap: 1rem;
+    padding: 0 2rem;
     justify-items: center;
-    align-content: center;
-    height: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
     box-sizing: border-box;
-    overflow-y: auto;
-
-    max-width: 1100px;           /* constrain width */
-    margin: 0 auto;              /* center horizontally */
   }
 
+  /* Show More / Less toggle (desktop doesn’t use this) */
+  &__show-more {
+    display: block;
+    margin: 1.5rem auto 0;
+    background: #014681;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+    z-index: 1;
+    &:hover { background: #012a4a; }
+  }
+
+  /* Card styling */
   &__card {
-    background: rgba(255, 255, 255, 0.95);
+    background: #f5f9fc;
     border-radius: 8px;
     padding: 1.25rem;
     text-align: center;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
     width: 100%;
-    max-width: 200px;            /* limit card width */
+    max-width: 200px;
+    box-sizing: border-box;
 
     &:hover {
       transform: translateY(-4px);
@@ -54,7 +82,6 @@
       margin-bottom: 0.6rem;
       display: block;
     }
-
     .map-pricing__more {
       font-weight: 500;
       color: #014681;
@@ -65,85 +92,153 @@
     }
   }
 
+  /* Popup overlay */
   &__popup-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     z-index: 1;
+    animation: overlayFade 0.3s ease-out;
   }
 
+  /* Popup window */
   &__popup {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80vw;
-    max-width: 580px;            /* slightly narrower */
-    max-height: 80vh;
+    transform: translate(-50%, -50%) scale(0.85);
+    opacity: 0;
+    width: 85vw;
+    max-width: 700px;
+    max-height: 85vh;
     background: #fff;
-    border-radius: 10px;
-    padding: 1.8rem;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
     z-index: 2;
     overflow-y: auto;
     box-sizing: border-box;
+    animation: popupFadeIn 0.35s ease-out forwards;
 
     &__close {
       position: absolute;
-      top: 0.8rem;
-      right: 0.8rem;
+      top: 1rem;
+      right: 1rem;
       background: none;
       border: none;
-      font-size: 1.3rem;
+      font-size: 1.5rem;
       cursor: pointer;
-      color: #666;
+      color: #888;
       transition: color 0.2s;
-
-      &:hover {
-        color: #333;
-      }
+      &:hover { color: #444; }
     }
 
     &__title {
-      margin: 0 0 1rem;
-      font-size: 1.4rem;
+      margin: 0 0 1.5rem;
+      font-size: 1.75rem;
       font-weight: 700;
-      color: #17175d;
       text-align: center;
+      color: #17175d;
     }
 
+    /* Table styling */
     &__table {
       width: 100%;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0;
+      border: 1px solid #dde3ea;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 1rem;
 
-      th,
-      td {
-        padding: 0.6rem;
-        text-align: center;
-        border-bottom: 1px solid #eee;
-        font-size: 0.9rem;
-      }
+      thead { background: #e9f1fb; }
       th {
-        background: #f5f5f5;
+        padding: 1rem;
+        color: #0a3a75;
         font-weight: 600;
+        text-transform: uppercase;
+      }
+      tbody tr:nth-child(even) { background: #f7fbff; }
+      tbody tr:hover { background: #e3f2fb; }
+      td {
+        padding: 0.85rem 1.2rem;
+        text-align: center;
+        color: #333;
       }
     }
   }
 }
 
-@media (max-width: 768px) {
-  .map-pricing__grid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    padding: 1rem;
+/* Animations */
+@keyframes overlayFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes popupFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.85);
   }
-  .map-pricing__card {
-    max-width: 160px;
-    padding: 1rem;
-    .map-pricing__city-name {
-      font-size: 1rem;
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Mobile: 2 cards/row + hide extras + vertical table labels */
+@media (max-width: 768px) {
+  .map-pricing {
+    &__bg {
+      background-size: contain;
+      background-position: top center;
     }
-    .map-pricing__more {
-      font-size: 0.85rem;
+    &__grid {
+      grid-template-columns: repeat(2, 1fr);
+      padding: 0 1rem;
+      max-width: 100%;
     }
+    /* hide beyond 4 cards unless nav’d away */
+    &:not(.show-all) .map-pricing__card:nth-child(n+5) {
+      display: none;
+    }
+
+    /* vertical‐label table */
+    &__popup__table thead {
+      display: none;
+    }
+    &__popup__table tbody tr {
+      display: block;
+      margin-bottom: 1rem;
+      border: 1px solid #dde3ea;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    &__popup__table td {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #eee;
+      position: relative;
+    }
+    &__popup__table td:last-child {
+      border-bottom: none;
+    }
+    /* inject weight labels */
+    &__popup__table td:nth-child(1)::before { content: "1კგ-მდე"; }
+    &__popup__table td:nth-child(2)::before { content: "3კგ-მდე"; }
+    &__popup__table td:nth-child(3)::before { content: "5კგ-მდე"; }
+    &__popup__table td:nth-child(4)::before { content: "10კგ-მდე"; }
+    &__popup__table td:nth-child(5)::before { content: "20კგ-მდე"; }
+    &__popup__table td:nth-child(6)::before { content: "30კგ-მდე"; }
+    &__popup__table td:nth-child(7)::before { content: "50კგ-мდე"; }
+    &__popup__table td:nth-child(8)::before { content: "100კგ-мდე"; }
+    &__popup__table td::before {
+      font-weight: 600;
+      color: #0a3a75;
+      margin-right: 0.5rem;
+    }
+  }
+  .map-pricing__header h2 {
+    font-size: 20px !important;
   }
 }
