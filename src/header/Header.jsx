@@ -168,12 +168,12 @@ export default function Header() {
               <div className="divider" />
 
               <div className="phone-block">
-                <div className="icon"><FaPhoneAlt/></div>
+                <div className="icon"><FaEnvelope/></div>
                 <div className="phone-text">
-                  <span className="phone-label">
+                  {/* <span className="phone-label">
                     {t.Hotline || "ცხელი ხაზი"}:
-                  </span>
-                  <span className="phone-number">(+995) 597-93-58-16</span>
+                  </span> */}
+                  <span className="phone-number">deliverow@gmail.com</span>
                 </div>
               </div>
 

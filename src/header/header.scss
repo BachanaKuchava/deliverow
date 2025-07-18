@@ -402,7 +402,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      background: #23a8df;
+      background: #014681;
       color: #fff;
       font-weight: 700;
       font-size: 1rem;
@@ -413,7 +413,7 @@
 
       .login-icon { font-size: 1.15rem; }
 
-      &:hover { background: #014681; }
+      &:hover { opacity: 80%;}
     }
   }
 

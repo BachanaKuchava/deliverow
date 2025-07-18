@@ -48,12 +48,12 @@ export default function AboutComponent1() {
 
   // Prepare stat values
   const [stat1Label, stat1Value] = parseStat(
-    t.aboutustested || 'გატესტილი სისტემა100%',
+    t.aboutustested || 'გატესტილი სისტემა 100%',
     'გატესტილი სისტემა',
     '100%'
   );
   const [stat2Label, stat2Value] = parseStat(
-    t.aboutusbuissenss || 'კმაყოფილი ბიზნეს სექტორი100%',
+    t.aboutusbuissenss || 'კმაყოფილი ბიზნეს სექტორი 100%',
     'კმაყოფილი ბიზნეს სექტორი',
     '100%'
   );
@@ -71,15 +71,15 @@ export default function AboutComponent1() {
       <div className="about1__overlay">
         <div className="about1__content">
           <p className="about1__subtitle">
-            {t.aboutusintro || 'ჩვენს შესახებ: სისტემა & გუნდი'}
+            {t.aboutusintro || 'Deliverow — თქვენი ბიზნესის საიმედო საკურიერო პარტნიორი'}
           </p>
           <h2 className="about1__title">
             {t.aboutustitle ||
-              'იდეიდან რეალობამდე\nგულმოდებული საკურიერო სისტემა და მეტი.'}
+              'ჩვენ არ ვყიდით უბრალოდ მიწოდების სერვისს — ჩვენ ვქმნით პროცესს, რომელიც ზრდის თქვენი ბიზნესის ეფექტურობას'}
           </h2>
           <p className="about1__desc">
             {t.aboutustext ||
-              'ჩვენ შევიმუშავეთ, დავაპროექტეთ და შევქმენით ახალი თანამედროვე საკურიერო სისტემა თქვენთვის და თქვენი ბიზნესისთვის.'}
+              'Deliverow გეხმარებათ დროისა და რესურსების დაზოგვაში. ჩვენ ვაწვდით ამანათებს სწრაფად, სტაბილურად და უსაფრთხოდ — ისე, როგორც ბიზნესს სჭირდება ყოველდღიური ოპერაციების წარმატებისთვის'}
           </p>
           <div className="about1__stats">
             <div className="stat">
