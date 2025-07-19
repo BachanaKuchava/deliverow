@@ -70,7 +70,7 @@ export default function ServiceSection() {
   };
 
   if (loading) {
-    return null; // ან დატვირთვის სპინერი
+    return null; // or a spinner
   }
 
   return (
@@ -86,9 +86,12 @@ export default function ServiceSection() {
       </div>
 
       <div className="service-section__grid">
-        {posts.map((post, i) => {
-          const imgUrl = post.image?.original || post.images?.[0]?.original_url || "";
-          // *** აქ ვამოწმებთ რა ტიპის არის post.post ***
+        {posts.slice(0, 4).map((post, i) => {
+          const imgUrl =
+            post.image?.original ||
+            post.images?.[0]?.original_url ||
+            "";
+          // handle multilingual raw HTML in post.post
           const rawHtml =
             typeof post.post === "object"
               ? post.post[lang.toLowerCase()]

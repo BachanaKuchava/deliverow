@@ -104,7 +104,7 @@
   &__title {
     margin: 0 0 0.5rem;
     font-size: 1.25rem;
-    color: #112244;
+    color: #014681;
   }
 
   &__desc {
@@ -117,7 +117,7 @@
   &__btn {
     display: inline-block;
     padding: 0.5rem 1rem;
-    background: var(--accent);
+    background: #014681;
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -128,7 +128,8 @@
     transition: background 0.3s ease;
 
     &:hover {
-      background: var(--accent-hover);
+      background: rgb(224, 224, 224);
+      color: #014681;
     }
   }
 
