@@ -1,3 +1,5 @@
+// src/header/Header.jsx
+
 import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import {
@@ -127,17 +129,23 @@ export default function Header() {
               <FaBars />
             </button>
 
+            {/* Commented out help toggle on logo-icon, replaced with link to home */}
+            {/*
             <img
               className="logo-icon"
               src={logo}
               onClick={() => setHelpOpen(true)}
               aria-label="Help"
             />
+            */}
+            <Link to={`/${lang.toLowerCase()}`} className="logo-icon-link" aria-label="Home">
+              <img className="logo-icon" src={logo} alt="Deliverow Logo" />
+            </Link>
 
             <div className="mobilelogo">
-              <img src={logo} className="logo-icon-mobile" />
+              <img src={logo} className="logo-icon-mobile" alt="Deliverow Logo" />
               <Link to={`/${lang.toLowerCase()}`} className="logolink mobilelogolink">
-               Deliverow
+                Deliverow
               </Link>
             </div>
 
@@ -170,9 +178,6 @@ export default function Header() {
               <div className="phone-block">
                 <div className="icon"><FaEnvelope/></div>
                 <div className="phone-text">
-                  {/* <span className="phone-label">
-                    {t.Hotline || "ცხელი ხაზი"}:
-                  </span> */}
                   <span className="phone-number">deliverow@gmail.com</span>
                 </div>
               </div>
@@ -197,7 +202,6 @@ export default function Header() {
           </button>
 
           <ul className="mobile-menu__nav">
-            {/* desktop‐style language toggle */}
             <li>
               <button
                 className="lang-selector__btn"
@@ -233,7 +237,6 @@ export default function Header() {
                 {t.menucontacts || "კონტაქტი"}
               </Link>
             </li>
-            {/* desktop‐style login button */}
             <li>
               <Link
                 to={`/${lang.toLowerCase()}/login`}
