@@ -1,4 +1,5 @@
 // src/pages/login/Login.jsx
+
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { LanguageContext } from "../../LanguageContext";
@@ -8,12 +9,12 @@ export default function Login() {
   const { lang } = useContext(LanguageContext);
 
   // form state
-  const [email, setEmail]     = useState("");
-  const [phone, setPhone]     = useState("");
+  const [email, setEmail]       = useState("");
+  const [phone, setPhone]       = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors]   = useState({});
-  const [visible, setVisible] = useState(false);
-  const [t, setT]             = useState({});
+  const [errors, setErrors]     = useState({});
+  const [visible, setVisible]   = useState(false);
+  const [t, setT]               = useState({});
 
   // slide‑in animation
   useEffect(() => {
@@ -33,7 +34,9 @@ export default function Login() {
         setT(map);
       })
       .catch(() => {});
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [lang]);
 
   const handleSubmit = async (e) => {
@@ -52,10 +55,12 @@ export default function Login() {
       if (phone.trim()) payload.phone = phone.trim();
       const res = await axios.post("https://deliverowapp.ge/api/login", payload);
 
-      // assume token is in res.data.token
-      localStorage.setItem("token", res.data.token);
-      // redirect to main site
-      window.location.href = "https://deliverowapp.ge";
+      // store tokens
+      const token = res.data.token;
+      const ssoToken = res.data.sso_token || token;
+      localStorage.setItem("token", token);
+      // redirect to SSO login
+      window.location.href = `https://deliverowapp.ge/admin/sso-login/${ssoToken}`;
     } catch (err) {
       const resp = err.response?.data;
       if (resp?.errors) {
@@ -75,9 +80,7 @@ export default function Login() {
           {t.logintitle || "შეიყვანეთ ანგარიში"}
         </h2>
 
-        {errors.form && (
-          <p className="login-form__error">{errors.form}</p>
-        )}
+        {errors.form && <p className="login-form__error">{errors.form}</p>}
 
         <div className="login-form__group">
           <input
@@ -91,9 +94,7 @@ export default function Login() {
           <label htmlFor="email" className="login-form__label">
             {t.email || "ელ.ფოსტა"}
           </label>
-          {errors.email && (
-            <p className="login-form__error">{errors.email[0]}</p>
-          )}
+          {errors.email && <p className="login-form__error">{errors.email[0]}</p>}
         </div>
 
         <div className="login-form__group">
@@ -108,9 +109,7 @@ export default function Login() {
           <label htmlFor="phone" className="login-form__label">
             {t.phone || "ტელეფონი"}
           </label>
-          {errors.phone && (
-            <p className="login-form__error">{errors.phone[0]}</p>
-          )}
+          {errors.phone && <p className="login-form__error">{errors.phone[0]}</p>}
         </div>
 
         <div className="login-form__group">
@@ -125,9 +124,7 @@ export default function Login() {
           <label htmlFor="password" className="login-form__label">
             {t.loginpassword || "პაროლი"}
           </label>
-          {errors.password && (
-            <p className="login-form__error">{errors.password[0]}</p>
-          )}
+          {errors.password && <p className="login-form__error">{errors.password[0]}</p>}
         </div>
 
         <div className="login-form__actions">
