@@ -1,3 +1,5 @@
+/* src/pages/services/singleService/singleservice.scss */
+
 /* Brand colors (header-blue) */
 :root {
   --primary-color: #266ed9;
@@ -22,12 +24,8 @@
     grid-template-columns: 1fr;
 
     /* swap sidebar & main on small screens */
-    &__main {
-      order: 1;
-    }
-    &__sidebar {
-      order: 2;
-    }
+    &__main { order: 1; }
+    &__sidebar { order: 2; }
   }
 
   /* SIDEBAR */
@@ -48,21 +46,31 @@
         justify-content: space-between;
         padding: 0.75rem;
         border-bottom: 1px solid var(--light-bg-border);
-        cursor: pointer;
         transition: background 0.2s;
 
         &:hover {
           background: var(--light-bg-hover);
         }
 
-        svg {
-          color: var(--primary-color);
-        }
-
-        span {
+        a {
           flex: 1;
           margin: 0 0.5rem;
           color: var(--text-dark);
+          text-decoration: none;
+          font-weight: 500;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          transition: color 0.2s;
+
+          &:hover {
+            color: var(--primary-color);
+          }
+        }
+
+        svg {
+          color: var(--primary-color);
+          flex-shrink: 0;
         }
       }
     }
@@ -116,16 +124,8 @@
     }
 
     .brochure-card {
-      &__title {
-        font-size: 1.1rem;
-        margin-bottom: 0.5rem;
-        color: var(--text-dark);
-      }
-      &__desc {
-        font-size: 0.9rem;
-        color: var(--muted);
-        margin-bottom: 1rem;
-      }
+      &__title { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+      &__desc  { font-size: 0.9rem; color: var(--muted); margin-bottom: 1rem; }
       &__btn {
         display: flex;
         align-items: center;
@@ -137,7 +137,6 @@
         border-radius: 0.25rem;
         width: 100%;
         cursor: pointer;
-        text-decoration: none;
         justify-content: center;
         transition: background 0.2s, color 0.2s;
 
@@ -154,84 +153,19 @@
     display: flex;
     flex-direction: column;
 
-    .hero-image {
-      img {
-        width: 100%;
-        border-radius: 0.5rem;
-        margin-bottom: 1.5rem;
-      }
-    }
-
     .service-title {
       font-size: 2rem;
       margin-bottom: 0.75rem;
       color: var(--text-dark);
     }
 
-    .service-intro {
-      color: var(--muted);
-      margin-bottom: 2rem;
-      line-height: 1.6;
-    }
-
     .stats-section {
       margin-bottom: 2rem;
-
-      .section-heading {
-        font-size: 1.5rem;
-        margin-bottom: 0.5rem;
-        position: relative;
-
-        &::after {
-          content: "";
-          position: absolute;
-          bottom: -4px;
-          left: 0;
-          width: 50px;
-          height: 4px;
-          background: var(--primary-color);
-          border-radius: 2px;
-        }
-      }
 
       .section-text {
         margin-bottom: 1rem;
         color: var(--muted);
-      }
-
-      .stats {
-        display: grid;
-        gap: 1rem;
-
-        .stat {
-          display: grid;
-          grid-template-columns: 1fr auto;
-          align-items: center;
-          gap: 1rem;
-
-          &__label {
-            font-weight: 600;
-            color: var(--text-dark);
-          }
-
-          &__bar {
-            background: var(--light-bg);
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-            flex: 1;
-
-            .stat__fill {
-              background: var(--primary-color);
-              height: 100%;
-            }
-          }
-
-          &__percent {
-            font-weight: 600;
-            color: var(--text-dark);
-          }
-        }
+        line-height: 1.6;
       }
     }
 
@@ -303,11 +237,9 @@
   /* VIDEO MODAL */
   .video-modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(17, 35, 64, 0.8);
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(17,35,64,0.8);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -321,13 +253,11 @@
 
     &__close {
       position: absolute;
-      top: -10px;
-      right: -10px;
+      top: -10px; right: -10px;
       background: var(--card-bg);
       border: none;
       border-radius: 50%;
-      width: 32px;
-      height: 32px;
+      width: 32px; height: 32px;
       font-size: 1.5rem;
       cursor: pointer;
       line-height: 1;

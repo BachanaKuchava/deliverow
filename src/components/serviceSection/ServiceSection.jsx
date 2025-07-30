@@ -42,9 +42,7 @@ export default function ServiceSection() {
     let mounted = true;
     setLoading(true);
     axios
-      .get(
-        `https://deliverowapp.ge/api/${lang.toLowerCase()}/blogCategory/servisebi`
-      )
+      .get(`https://deliverowapp.ge/api/${lang.toLowerCase()}/blogCategory/servisebi`)
       .then((res) => {
         if (!mounted) return;
         const data = res.data?.data?.category?.posts?.data || [];
@@ -77,8 +75,12 @@ export default function ServiceSection() {
     <section className="service-section">
       <div className="service-section__header">
         <div>
-          <p className="subtitle">{t.mainservicesintro || "ჩვენი საუკეთესო სერვისები"}</p>
-          <h2 className="title">{t.mainservicestitle || "ყველა საკურიერო სერვისი თქვენთვის"}</h2>
+          <p className="subtitle">
+            {t.mainservicesintro || "ჩვენი საუკეთესო სერვისები"}
+          </p>
+          <h2 className="title">
+            {t.mainservicestitle || "ყველა საკურიერო სერვისი თქვენთვის"}
+          </h2>
         </div>
         <Link to={`/${lang.toLowerCase()}/services`} className="all-btn">
           {t.allservices || "ყველა სერვისი"} <FaArrowRight />
@@ -91,11 +93,17 @@ export default function ServiceSection() {
             post.image?.original ||
             post.images?.[0]?.original_url ||
             "";
-          // handle multilingual raw HTML in post.post
+
+          // strip HTML tags then truncate to 100 chars
           const rawHtml =
             typeof post.post === "object"
               ? post.post[lang.toLowerCase()]
-              : post.post;
+              : post.post || "";
+          const plainText = rawHtml.replace(/<[^>]+>/g, "");
+          const snippet =
+            plainText.length > 100
+              ? plainText.slice(0, 100) + "…"
+              : plainText;
 
           return (
             <div className="card" key={post.id}>
@@ -112,10 +120,7 @@ export default function ServiceSection() {
               </div>
               <div className="card-content">
                 <h3>{post.title}</h3>
-                <div
-                  className="desc"
-                  dangerouslySetInnerHTML={{ __html: rawHtml }}
-                />
+                <p className="desc">{snippet}</p>
               </div>
             </div>
           );

@@ -1,5 +1,7 @@
+// src/pages/services/singleService/SingleService.jsx
+
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   FaShip,
   FaPlane,
@@ -30,6 +32,7 @@ const FALLBACKS = {
 
 export default function SingleService() {
   const { lang, slug } = useParams();
+  const [services, setServices] = useState([]);
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -46,11 +49,16 @@ export default function SingleService() {
       .then((res) => {
         if (!mounted) return;
         const list = res.data?.data?.category?.posts?.data || [];
+        setServices(list);
+
         const found = list.find((p) => p.slug === slug);
         if (found) {
+          const raw = found.post;
+          const htmlContent =
+            typeof raw === "object" ? raw[lang.toLowerCase()] : raw;
           setPost({
             title: found.title,
-            html: found.post?.[lang] || "",
+            html: htmlContent,
             images: found.images || [],
           });
         } else if (FALLBACKS[slug]) {
@@ -78,20 +86,26 @@ export default function SingleService() {
   if (loading) return <div className="single-service">Loading…</div>;
   if (error) return <div className="single-service">Oops: {error}</div>;
 
-  const heroImg = post.images[0]?.original || "";
+  const heroImg =
+    post.image?.original || post.images[0]?.original_url || "";
 
   return (
     <div className="single-service">
       {/* SIDEBAR */}
       <aside className="single-service__sidebar">
         <ul className="services-list">
-          <li><FaShip /> <span>Ocean Freight</span> <FaArrowRight /></li>
-          <li><FaPlane /> <span>Air Freight</span> <FaArrowRight /></li>
-          <li><FaTrain /> <span>Rail Freight</span> <FaArrowRight /></li>
-          <li><FaTruck /> <span>Road Freight</span> <FaArrowRight /></li>
-          <li><FaWarehouse /> <span>Warehouse</span> <FaArrowRight /></li>
-          <li><FaBoxes /> <span>Cargo Freight</span> <FaArrowRight /></li>
+          {services.map((s) => (
+            <li key={s.slug}>
+              <Link to={`/${lang.toLowerCase()}/services/${s.slug}`}>  {/* updated path */}
+                {s.title.length > 30
+                  ? s.title.substring(0, 30) + "…"
+                  : s.title}
+              </Link>
+              <FaArrowRight />
+            </li>
+          ))}
         </ul>
+
         <div className="contact-card">
           <p className="contact-card__subtitle">Logistics & Cargo For Business</p>
           <a href="#" className="contact-card__btn">
@@ -101,6 +115,7 @@ export default function SingleService() {
             Contact With Us <FaArrowRight />
           </a>
         </div>
+
         <div className="brochure-card">
           <h4 className="brochure-card__title">Brochure</h4>
           <p className="brochure-card__desc">
@@ -117,50 +132,21 @@ export default function SingleService() {
 
       {/* MAIN CONTENT */}
       <main className="single-service__main">
-        {heroImg && (
-          <div className="hero-image">
-            <img src={heroImg} alt={post.title} />
-          </div>
-        )}
-
         <h1 className="service-title">{post.title}</h1>
 
-        <div
-          className="service-intro"
-          dangerouslySetInnerHTML={{ __html: post.html }}
-        />
-
         <section className="stats-section">
-          <h2 className="section-heading">
-            Our Next Level Logistics Around The World
-          </h2>
-          <p className="section-text">
-            With over four decades of experience providing solutions for large
-            enterprises throughout the globe, we offer tailored logistics
-            solutions for specific markets.
-          </p>
-          <div className="stats">
-            <div className="stat">
-              <div className="stat__label">Successful Delivery</div>
-              <div className="stat__bar">
-                <div className="stat__fill" style={{ width: "82%" }} />
-              </div>
-              <div className="stat__percent">82%</div>
-            </div>
-            <div className="stat">
-              <div className="stat__label">Happy Customers</div>
-              <div className="stat__bar">
-                <div className="stat__fill" style={{ width: "90%" }} />
-              </div>
-              <div className="stat__percent">90%</div>
-            </div>
-          </div>
+          <div
+            className="section-text"
+            dangerouslySetInnerHTML={{ __html: post.html }}
+          />
         </section>
 
         <section className="video-section">
           <div className="video-thumb" onClick={() => setShowVideo(true)}>
             {heroImg && <img src={heroImg} alt="Play video" />}
-            <div className="play-icon"><FaPlay /></div>
+            <div className="play-icon">
+              <FaPlay />
+            </div>
           </div>
           <div className="video-content">
             <h3 className="video-title">

@@ -16,9 +16,11 @@ export default function MainHero() {
   // index of which title to show
   const [titleIdx, setTitleIdx] = useState(0);
   const titleKeys = [
+    "mainslidertitle5",
     "mainslidertitle",
     "mainslidertitle2",
-    "mainslidertitle3"
+    "mainslidertitle3",
+    "mainslidertitle4"
   ];
   const titles = titleKeys.map((key) => t[key] || "");
 
