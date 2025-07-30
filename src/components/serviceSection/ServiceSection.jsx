@@ -1,4 +1,5 @@
 // src/components/serviceSection/ServiceSection.jsx
+
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import {
@@ -18,47 +19,37 @@ export default function ServiceSection() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 1) fetch translations
+  // fetch translations
   useEffect(() => {
-    let mounted = true;
+    let m = true;
     axios
       .get(`https://deliverowapp.ge/api/${lang.toLowerCase()}/translations`)
-      .then((res) => {
-        if (!mounted) return;
+      .then(res => {
+        if (!m) return;
         const map = {};
-        res.data.forEach(({ alias, value }) => {
-          map[alias] = value;
-        });
+        res.data.forEach(({ alias, value }) => map[alias] = value);
         setT(map);
       })
-      .catch((err) => console.error("Translations fetch failed:", err));
-    return () => {
-      mounted = false;
-    };
+      .catch(console.error);
+    return () => { m = false; };
   }, [lang]);
 
-  // 2) fetch services posts
+  // fetch services
   useEffect(() => {
-    let mounted = true;
+    let m = true;
     setLoading(true);
     axios
       .get(`https://deliverowapp.ge/api/${lang.toLowerCase()}/blogCategory/servisebi`)
-      .then((res) => {
-        if (!mounted) return;
-        const data = res.data?.data?.category?.posts?.data || [];
-        setPosts(data);
+      .then(res => {
+        if (!m) return;
+        setPosts(res.data?.data?.category?.posts?.data || []);
       })
-      .catch((err) => console.error("Services fetch failed:", err))
-      .finally(() => {
-        if (mounted) setLoading(false);
-      });
-    return () => {
-      mounted = false;
-    };
+      .catch(console.error)
+      .finally(() => { if (m) setLoading(false); });
+    return () => { m = false; };
   }, [lang]);
 
-  // pick icon by index
-  const iconFor = (i) => {
+  const iconFor = i => {
     switch (i) {
       case 0: return <FaBox />;
       case 1: return <FaBoxOpen />;
@@ -67,20 +58,14 @@ export default function ServiceSection() {
     }
   };
 
-  if (loading) {
-    return null; // or a spinner
-  }
+  if (loading) return null;
 
   return (
     <section className="service-section">
       <div className="service-section__header">
         <div>
-          <p className="subtitle">
-            {t.mainservicesintro || "ჩვენი საუკეთესო სერვისები"}
-          </p>
-          <h2 className="title">
-            {t.mainservicestitle || "ყველა საკურიერო სერვისი თქვენთვის"}
-          </h2>
+          <p className="subtitle">{t.mainservicesintro || "ჩვენი საუკეთესო სერვისები"}</p>
+          <h2 className="title">{t.mainservicestitle || "ყველა საკურიერო სერვისი თქვენთვის"}</h2>
         </div>
         <Link to={`/${lang.toLowerCase()}/services`} className="all-btn">
           {t.allservices || "ყველა სერვისი"} <FaArrowRight />
@@ -89,21 +74,21 @@ export default function ServiceSection() {
 
       <div className="service-section__grid">
         {posts.slice(0, 4).map((post, i) => {
-          const imgUrl =
-            post.image?.original ||
-            post.images?.[0]?.original_url ||
-            "";
+          const imgUrl = post.image?.original || post.images?.[0]?.original_url || "";
 
-          // strip HTML tags then truncate to 100 chars
-          const rawHtml =
-            typeof post.post === "object"
-              ? post.post[lang.toLowerCase()]
-              : post.post || "";
-          const plainText = rawHtml.replace(/<[^>]+>/g, "");
-          const snippet =
-            plainText.length > 100
-              ? plainText.slice(0, 100) + "…"
-              : plainText;
+          // get the HTML string
+          const rawHtml = typeof post.post === "object"
+            ? post.post[lang.toLowerCase()]
+            : post.post || "";
+
+          // decode entities + strip tags in one go
+          const doc = new DOMParser().parseFromString(rawHtml, "text/html");
+          const plainText = doc.body.textContent || "";
+
+          // truncate to 100 characters (at word boundary if you like)
+          const snippet = plainText.length > 100
+            ? plainText.slice(0, 100).replace(/\s+\S*$/, "") + "…"
+            : plainText;
 
           return (
             <div className="card" key={post.id}>
