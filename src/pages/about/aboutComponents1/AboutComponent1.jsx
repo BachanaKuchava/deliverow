@@ -81,7 +81,7 @@ export default function AboutComponent1() {
             {t.aboutustext ||
               'Deliverow გეხმარებათ დროისა და რესურსების დაზოგვაში. ჩვენ ვაწვდით ამანათებს სწრაფად, სტაბილურად და უსაფრთხოდ — ისე, როგორც ბიზნესს სჭირდება ყოველდღიური ოპერაციების წარმატებისთვის'}
           </p>
-          <div className="about1__stats">
+          {/* <div className="about1__stats">
             <div className="stat">
               <span className="stat__label">{stat1Label}</span>
               <span className="stat__value">{stat1Value}</span>
@@ -102,7 +102,7 @@ export default function AboutComponent1() {
                 />
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

@@ -148,7 +148,7 @@ export default function SingleService() {
               <FaPlay />
             </div>
           </div>
-          <div className="video-content">
+          {/* <div className="video-content">
             <h3 className="video-title">
               Raise Capital Faster & Negotiate On Your Own Terms
             </h3>
@@ -162,7 +162,7 @@ export default function SingleService() {
               <li><FaCheckCircle /> Professional and Qualified</li>
               <li><FaCheckCircle /> Safe, Reliable And Express</li>
             </ul>
-          </div>
+          </div> */}
         </section>
       </main>
 
