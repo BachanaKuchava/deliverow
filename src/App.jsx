@@ -12,6 +12,7 @@ import "./App.css";
 
 // lazy‑load pages
 const Home          = lazy(() => import("./pages/home/Home"));
+const Registration  = lazy(() => import("./pages/registration/Registration"));
 const Contact       = lazy(() => import("./pages/contact/Contact"));
 const Blog          = lazy(() => import("./pages/blog/Blog"));
 const SingleBlog    = lazy(() => import("./pages/blog/singleblog/SingleBlog"));
@@ -54,6 +55,7 @@ export default function App() {
             <Route path=":lang">
               <Route index element={<PageWrapper><Home /></PageWrapper>} />
               <Route path="contact" element={<PageWrapper><Contact /></PageWrapper>} />
+              <Route path="register" element={<PageWrapper><Registration /></PageWrapper>} />
 
               {/* BLOG */}
               <Route path="blog" element={<PageWrapper><Blog /></PageWrapper>} />

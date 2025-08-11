@@ -1,9 +1,8 @@
-// src/pages/login/Login.jsx
-
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { LanguageContext } from "../../LanguageContext";
 import "./login.scss";
+import { Link } from "react-router-dom";
 
 export default function Login() {
   const { lang } = useContext(LanguageContext);
@@ -16,7 +15,7 @@ export default function Login() {
   const [visible, setVisible]   = useState(false);
   const [t, setT]               = useState({});
 
-  // slide‑in animation
+  // slide-in animation
   useEffect(() => {
     const tid = setTimeout(() => setVisible(true), 20);
     return () => clearTimeout(tid);
@@ -59,6 +58,7 @@ export default function Login() {
       const token = res.data.token;
       const ssoToken = res.data.sso_token || token;
       localStorage.setItem("token", token);
+
       // redirect to SSO login
       window.location.href = `https://deliverowapp.ge/admin/sso-login/${ssoToken}`;
     } catch (err) {
@@ -77,7 +77,7 @@ export default function Login() {
     <div className={`login-container${visible ? " appear" : ""}`}>
       <form className="login-form" onSubmit={handleSubmit}>
         <h2 className="login-form__title">
-          {t.logintitle || "შეიყვანეთ ანგარიში"}
+          {t.logintitle || "ავტორიზაცია"}
         </h2>
 
         {errors.form && <p className="login-form__error">{errors.form}</p>}
@@ -106,7 +106,7 @@ export default function Login() {
             placeholder=" "
             className="login-form__input"
           />
-          <label htmlFor="phone" className="login-form__label">
+        <label htmlFor="phone" className="login-form__label">
             {t.phone || "ტელეფონი"}
           </label>
           {errors.phone && <p className="login-form__error">{errors.phone[0]}</p>}
@@ -145,10 +145,30 @@ export default function Login() {
             {t.loginforget || "დაგავიწყდა პაროლი ?"}
           </a>
         </div>
+           {/* new bilingual footer line */}
+      <div className="login-form__footer">
+  {lang === "KA" ? (
+    <>
+      არ გაქვს ანგარიში?{" "}
+      <Link className="footer-link" to={`/${lang}/register`}>
+        დარეგისტრირდი
+      </Link>
+    </>
+  ) : (
+    <>
+      Don't have an account?{" "}
+      <Link className="footer-link" to={`/${lang}/register`}>
+        Sign up
+      </Link>
+    </>
+  )}
+</div>
 
         <button type="submit" className="login-form__btn">
           {t.login || "შესვლა"}
         </button>
+
+     
       </form>
     </div>
   );

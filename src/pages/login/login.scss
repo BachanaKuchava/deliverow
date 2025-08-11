@@ -138,18 +138,38 @@
       background: var(--primary-hover);
     }
   }
+
+  /* new footer text */
+  &__footer {
+    margin-bottom: 1.5rem;
+
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+}
+
+.login-form__error {
+  color: #c00;
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
 }
 
 /* Responsive */
 @media (max-width: 480px) {
   .login-container .login-form {
     padding: 1.5rem;
-    max-width: 100%; /* full width on tiny screens */
+    max-width: 100%;
   }
 }
-.login-form__error {
-  color: #c00;
-  text-align: center;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
+.login-form__footer .footer-link {
+  color: #014681;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+.login-form__footer .footer-link:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
 }
