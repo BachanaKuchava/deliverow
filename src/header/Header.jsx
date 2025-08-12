@@ -101,8 +101,8 @@ export default function Header() {
               </div>
             </div>
             <div className="upper-header__right">
-              <a href="#" className="upper-header__link">Help Center</a>
-              <a href="#" className="upper-header__link">Find Store</a>
+              {/* <a href="#" className="upper-header__link">Help Center</a>
+              <a href="#" className="upper-header__link">Find Store</a> */}
               <span className="upper-header__divider" />
               <span className="upper-header__follow">
                 {t.upperheadersub || "გამოგვიწერე"}
