@@ -9,7 +9,7 @@ function About() {
     
     <AboutComponent1 />
     <Operation />
-    <AboutTeam />
+    {/* <AboutTeam /> */}
     </> );
 }
 

@@ -4,13 +4,10 @@
   transform: translateY(20px);
   transition: opacity 0.6s ease, transform 0.6s ease;
 
-  &.appear {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  &.appear { opacity: 1; transform: translateY(0); }
 }
 
-/* your brand header-blue palette */
+/* palette */
 :root {
   --primary: #266ed9;
   --primary-hover: #1e5bbd;
@@ -22,8 +19,8 @@
 
 .login-container {
   display: flex;
-  justify-content: center;        /* center horizontally */
-  margin: 20px auto 50px;         /* 20px top, auto sides, 50px bottom */
+  justify-content: center;
+  margin: 20px auto 50px;
   background: var(--background);
   padding: 2rem;
 }
@@ -32,9 +29,9 @@
   background: var(--card-bg);
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
   width: 100%;
-  max-width: 450px;                /* form is a bit bigger now */
+  max-width: 450px;
 
   &__title {
     margin: 0 0 1.5rem;
@@ -57,13 +54,8 @@
       font-size: 1rem;
       transition: border-color 0.3s ease;
 
-      &:focus {
-        border-color: var(--primary);
-      }
-
-      &::placeholder {
-        color: transparent;
-      }
+      &:focus { border-color: var(--primary); }
+      &::placeholder { color: transparent; }
     }
 
     .login-form__label {
@@ -76,10 +68,7 @@
       color: #999;
       font-size: 0.9rem;
       pointer-events: none;
-      transition:
-        top 0.3s ease,
-        font-size 0.3s ease,
-        color 0.3s ease;
+      transition: top 0.3s ease, font-size 0.3s ease, color 0.3s ease;
     }
 
     .login-form__input:focus + .login-form__label,
@@ -88,6 +77,34 @@
       font-size: 0.75rem;
       color: var(--primary);
     }
+
+    /* --- PHONE CODE UI (styled better, still compact) --- */
+    &.phone-group {
+      .phone-code-select {
+        position: absolute;
+        top: 0; left: 0;
+        height: 100%;
+        min-width: 100px;
+        padding: 0 10px;
+        border: 1px solid #ccc;
+        border-right: 0;
+        border-radius: 4px 0 0 4px;
+        background: #fff;
+        font-size: 0.95rem;
+        outline: none;
+      }
+      .phone-with-code {
+        padding-left: 120px;
+        border-left: 0;
+        border-radius: 0 4px 4px 0;
+      }
+      /* move label so it doesn't overlap the select */
+      &.has-code .login-form__label { left: 120px; }
+      /* unified focus ring */
+      &:focus-within .phone-code-select,
+      &:focus-within .phone-with-code { border-color: var(--primary); }
+    }
+    /* --- end PHONE CODE UI --- */
   }
 
   &__actions {
@@ -117,12 +134,11 @@
       text-decoration: none;
       transition: color 0.3s ease;
 
-      &:hover {
-        color: var(--primary-hover);
-      }
+      &:hover { color: var(--primary-hover); }
     }
   }
 
+  /* BUTTON (with loader) */
   &__btn {
     width: 100%;
     padding: 0.75rem;
@@ -133,21 +149,54 @@
     font-size: 1rem;
     cursor: pointer;
     transition: background 0.3s ease;
+    display: flex;                     /* center spinner + label */
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    position: relative;
 
-    &:hover {
-      background: var(--primary-hover);
+    &:hover { background: var(--primary-hover); }
+    &:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .btn-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,.55);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: login-spin 0.8s linear infinite;
+      display: none; /* visible only when loading */
+      flex: 0 0 16px;
     }
+
+    &.is-loading .btn-spinner { display: inline-block; }
   }
 
-  /* new footer text */
+  /* FOOTER — revert to subtle sentence + normal-weight link */
   &__footer {
+    margin-top: 0.75rem;
     margin-bottom: 1.5rem;
-
     text-align: center;
     color: var(--muted);
     font-size: 0.95rem;
+    line-height: 1.4;
+
+    .footer-link {
+      color: #014681;
+      font-weight: 400;      /* not bold */
+      text-decoration: none;
+      padding-left: 0.25rem; /* keeps spacing nice in KA/EN */
+    }
+
+    .footer-link:hover {
+      color: var(--primary-hover);
+      text-decoration: underline;
+    }
   }
 }
+
+/* spinner animation */
+@keyframes login-spin { to { transform: rotate(360deg); } }
 
 .login-form__error {
   color: #c00;
@@ -158,18 +207,55 @@
 
 /* Responsive */
 @media (max-width: 480px) {
-  .login-container .login-form {
-    padding: 1.5rem;
-    max-width: 100%;
-  }
+  .login-container .login-form { padding: 1.5rem; max-width: 100%; }
+  .login-form__group.phone-group .phone-with-code { padding-left: 116px; }
 }
-.login-form__footer .footer-link {
-  color: #014681;
-  text-decoration: none;
-  font-weight: 600;
+
+/* ---- Session modal (scoped to login) ---- */
+.login-modal__overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+
+.login-modal__card {
+  width: min(480px, 92vw);
+  background: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  padding: 1.25rem 1.25rem 1rem;
+}
+
+.login-modal__title {
+  margin: 0 0 0.5rem;
+  color: var(--text-dark);
+  font-size: 1.2rem;
+}
+
+.login-modal__text {
+  margin: 0 0 1rem;
+  color: var(--text-dark);
+}
+
+.login-modal__actions {
+  display: flex; gap: 0.5rem; justify-content: flex-end;
+}
+
+.login-modal__btn {
+  padding: 0.6rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
   cursor: pointer;
+  border: 1px solid transparent;
 }
-.login-form__footer .footer-link:hover {
-  color: var(--primary-hover);
-  text-decoration: underline;
+
+.login-modal__btn--primary { background: #014681; color: #fff; }
+.login-modal__btn--primary:hover { background: var(--primary-hover); }
+
+.login-modal__btn--ghost {
+  background: #fff; color: var(--text-dark);
+  border-color: #c7d0dd;
 }
+.login-modal__btn--ghost:hover { background: #f4f6f9; }
+/* ---- end modal ---- */
