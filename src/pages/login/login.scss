@@ -33,6 +33,15 @@
   width: 100%;
   max-width: 450px;
 
+    &__help {
+    margin-top: 0.75rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+
   &__title {
     margin: 0 0 1.5rem;
     font-size: 1.75rem;

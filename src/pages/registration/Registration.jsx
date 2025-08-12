@@ -28,6 +28,8 @@ const STATIC_T = {
     phone_required: "ტელეფონი სავალდებულოა.",
     password_required: "პაროლი სავალდებულოა.",
     password2_required: "დაადასტურე პაროლი.",
+    // helper (under button)
+    contact_help: "დამატებითი ინფორმაციისთვის დაგვიკავშირდით",
   },
   EN: {
     registertitle: "Sign up",
@@ -52,6 +54,8 @@ const STATIC_T = {
     phone_required: "Phone is required.",
     password_required: "Password is required.",
     password2_required: "Please confirm your password.",
+    // helper (under button)
+    contact_help: "For more information, contact us",
   },
 };
 
@@ -64,16 +68,16 @@ export default function Registration() {
   const [visible, setVisible] = useState(false);
 
   // form
-  const [name, setName]                 = useState("");
-  const [lastname, setLastname]         = useState("");
-  const [username, setUsername]         = useState("");
-  const [email, setEmail]               = useState("");
-  const [dialCode, setDialCode]         = useState("+995");
-  const [phone, setPhone]               = useState("");
-  const [password, setPassword]         = useState("");
-  const [password2, setPassword2]       = useState("");
-  const [errors, setErrors]             = useState({});
-  const [submitting, setSubmitting]     = useState(false);
+  const [name, setName]           = useState("");
+  const [lastname, setLastname]   = useState("");
+  const [username, setUsername]   = useState("");
+  const [email, setEmail]         = useState("");
+  const [dialCode, setDialCode]   = useState("+995");
+  const [phone, setPhone]         = useState("");
+  const [password, setPassword]   = useState("");
+  const [password2, setPassword2] = useState("");
+  const [errors, setErrors]       = useState({});
+  const [submitting, setSubmitting] = useState(false);
 
   // slide-in
   useEffect(() => {
@@ -111,7 +115,6 @@ export default function Registration() {
     if (!password) newErrors.password = [tt("password_required")];
     if (!password2) newErrors.password_confirmation = [tt("password2_required")];
     if (password && password2 && password !== password2) {
-      // show mismatch under confirm field (and first field if you want)
       newErrors.password_confirmation = [tt("password_mismatch")];
     }
 
@@ -290,9 +293,21 @@ export default function Registration() {
           </Link>
         </div>
 
-        <button type="submit" className="reg-form__btn" disabled={submitting}>
-          {submitting ? tt("loading", "იგზავნება...") : tt("register", "რეგისტრაცია")}
+        {/* BUTTON with spinner (same pattern as Login) */}
+        <button
+          type="submit"
+          className={`reg-form__btn ${submitting ? "is-loading" : ""}`}
+          disabled={submitting}
+          aria-busy={submitting}
+        >
+          <span className="btn-spinner" aria-hidden="true"></span>
+          <span className="btn-label">
+            {submitting ? tt("loading", "Sending...") : tt("register", "Register")}
+          </span>
         </button>
+
+        {/* helper line under button */}
+        <p className="reg-form__help">{tt("contact_help")}</p>
       </form>
     </div>
   );

@@ -22,6 +22,8 @@ const STATIC_T = {
     continue_btn: "გადადი Deliverowapp.ge-ზე",
     switch_btn: "ანგარიშის შეცვლა",
     continue_as: "შესულია როგორც",
+    // NEW
+    contact_help: "დამატებითი ინფორმაციისთვის დაგვიკავშირდით",
   },
   EN: {
     logintitle: "Sign in",
@@ -40,6 +42,8 @@ const STATIC_T = {
     continue_btn: "Open Deliverowapp.ge",
     switch_btn: "Switch account",
     continue_as: "Currently logged in as",
+    // NEW
+    contact_help: "For more information, contact us",
   },
 };
 
@@ -97,7 +101,6 @@ export default function Login() {
       try {
         const url = (config?.url || "").toString();
         if (url.endsWith("/api/login") && sessionActiveRef.current) {
-          // cancel the request before it even goes out
           return Promise.reject(new axios.Cancel("blocked: already logged in"));
         }
       } catch {}
@@ -124,7 +127,7 @@ export default function Login() {
     return { loggedIn: false, who: null };
   };
 
-  // check on mount: if someone logged in, show popup and lock
+  // check on mount
   useEffect(() => {
     (async () => {
       setCheckingSession(true);
@@ -138,7 +141,7 @@ export default function Login() {
     })();
   }, []);
 
-  // prevent native submit (Enter) completely
+  // prevent Enter submit
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -150,7 +153,7 @@ export default function Login() {
     if (submitting || checkingSession) return;
     setErrors({});
 
-    // 1) ALWAYS pre-check /check
+    // pre-check
     setCheckingSession(true);
     const { loggedIn, who } = await safeCheckSession();
     setCheckingSession(false);
@@ -158,10 +161,10 @@ export default function Login() {
       setSessionActive(true);
       setSessionIdentity(who);
       setShowSessionModal(true);
-      return; // <-- STOP. No /api/login, no redirect.
+      return;
     }
 
-    // 2) validate input
+    // validate
     const digitsOnly = phone.replace(/\D/g, "");
     const hasPhone = digitsOnly.length > 0;
     const hasEmail = !!email.trim();
@@ -170,7 +173,7 @@ export default function Login() {
       return;
     }
 
-    // 3) proceed with login
+    // login
     try {
       setSubmitting(true);
       const payload = { password };
@@ -185,7 +188,6 @@ export default function Login() {
       window.location.href = `https://deliverowapp.ge/admin/sso-login/${ssoToken}`;
     } catch (err) {
       if (axios.isCancel(err)) {
-        // blocked by interceptor because a session became active in the meantime
         setSubmitting(false);
         setSessionActive(true);
         setShowSessionModal(true);
@@ -208,12 +210,10 @@ export default function Login() {
     setShowSessionModal(false);
   };
 
-  // block interactions while busy or popup visible
   const isBlocked = submitting || checkingSession || showSessionModal || sessionActive;
 
   return (
     <div className={`login-container${visible ? " appear" : ""}`}>
-      {/* no onSubmit; manual click only; Enter is blocked */}
       <form className="login-form" noValidate aria-disabled={isBlocked} onKeyDown={handleKeyDown}>
         <h2 className="login-form__title">{tt("logintitle", "ავტორიზაცია")}</h2>
 
@@ -296,7 +296,6 @@ export default function Login() {
           <Link className="footer-link" to={`/${L}/register`}>{tt("signup", "დარეგისტრირდი")}</Link>
         </div>
 
-        {/* button is NOT submit; we control click */}
         <button
           type="button"
           className={`login-form__btn ${submitting ? "is-loading" : ""}`}
@@ -309,6 +308,9 @@ export default function Login() {
             {tt(submitting ? "signingin" : "login", submitting ? "Signing in" : "Log in")}
           </span>
         </button>
+
+        {/* NEW helper line under the button */}
+        <p className="login-form__help">{tt("contact_help")}</p>
       </form>
 
       {showSessionModal && (
