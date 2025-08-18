@@ -43,32 +43,80 @@ export default function SingleBlog() {
   if (error)   return <p>{error}</p>;
   if (!post)   return <p>Post not found.</p>;
 
-  // title is now an object { en, ka }
-  const title = post.title[lang.toLowerCase()] || post.title.en;
+  const LOCALE = lang.toLowerCase();
+
+  // title can be object or string
+  const title =
+    (typeof post.title === 'object'
+      ? post.title[LOCALE] || post.title.en
+      : post.title) || '';
+
   const img   = post.image?.original || post.images?.[0]?.original_url || '';
-  const date  = new Date(post.published_at).toLocaleDateString(
-    lang === 'KA' ? 'ka-GE' : 'en-US',
-    { day: '2-digit', month: 'long', year: 'numeric' }
-  );
-  const html  = post.post[lang.toLowerCase()] || post.post.en;
+  const date  = post.published_at
+    ? new Date(post.published_at).toLocaleDateString(
+        lang === 'KA' ? 'ka-GE' : 'en-US',
+        { day: '2-digit', month: 'long', year: 'numeric' }
+      )
+    : '';
+
+  // pick localized html (post -> description -> short_description)
+  const pickLocalized = (val) => {
+    if (!val) return '';
+    if (typeof val === 'object') return val[LOCALE] || val.en || '';
+    return String(val);
+  };
+  let html = pickLocalized(post.post);
+  if (!html) html = pickLocalized(post.description);
+  if (!html) html = pickLocalized(post.short_description);
+
+  // VIDEO support (cover)
+  const v = post.video || {};
+  const videoUrl   = v.embed_url || v.url || null;
+  const vW         = Number(v.width)  || 16;
+  const vH         = Number(v.height) || 9;
+  const ratioStyle = { aspectRatio: `${vW} / ${vH}` };
 
   return (
-    // note the added "appear" class here
     <div className="article-page appear">
       <main className="article-page__main">
         <h1 className="article-title">{title}</h1>
-        <p className="article-meta"><FaCalendarAlt /> {date}</p>
+        {date && <p className="article-meta"><FaCalendarAlt /> {date}</p>}
 
-        {img && (
-          <div className="article-image-wrap">
-            <img src={img} alt={title} className="article-image" />
+        {/* If there's a video, show it as the cover; otherwise show image */}
+        {videoUrl ? (
+          <div className="article-media" style={ratioStyle}>
+            {v.embed_url ? (
+              <iframe
+                src={v.embed_url}
+                title={title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                loading="lazy"
+              />
+            ) : (
+              <video
+                controls
+                preload="metadata"
+                poster={img || undefined}
+              >
+                <source src={v.url} />
+              </video>
+            )}
           </div>
+        ) : (
+          img && (
+            <div className="article-image-wrap">
+              <img src={img} alt={title} className="article-image" />
+            </div>
+          )
         )}
 
-        <div
-          className="article-content"
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
+        {html && (
+          <div
+            className="article-content"
+            dangerouslySetInnerHTML={{ __html: html }}
+          />
+        )}
       </main>
 
       <aside className="article-page__sidebar">
