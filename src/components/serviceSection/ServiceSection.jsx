@@ -19,7 +19,6 @@ export default function ServiceSection() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // fetch translations
   useEffect(() => {
     let m = true;
     axios
@@ -27,14 +26,13 @@ export default function ServiceSection() {
       .then(res => {
         if (!m) return;
         const map = {};
-        res.data.forEach(({ alias, value }) => map[alias] = value);
+        res.data.forEach(({ alias, value }) => (map[alias] = value));
         setT(map);
       })
       .catch(console.error);
     return () => { m = false; };
   }, [lang]);
 
-  // fetch services
   useEffect(() => {
     let m = true;
     setLoading(true);
@@ -76,22 +74,23 @@ export default function ServiceSection() {
         {posts.slice(0, 4).map((post, i) => {
           const imgUrl = post.image?.original || post.images?.[0]?.original_url || "";
 
-          // get the HTML string
           const rawHtml = typeof post.post === "object"
             ? post.post[lang.toLowerCase()]
             : post.post || "";
-
-          // decode entities + strip tags in one go
           const doc = new DOMParser().parseFromString(rawHtml, "text/html");
           const plainText = doc.body.textContent || "";
-
-          // truncate to 100 characters (at word boundary if you like)
           const snippet = plainText.length > 100
             ? plainText.slice(0, 100).replace(/\s+\S*$/, "") + "…"
             : plainText;
 
           return (
             <div className="card" key={post.id}>
+              {/* FULL-CARD TAP TARGET (mobile only via CSS) */}
+              <Link
+                to={`/${lang.toLowerCase()}/services/${post.slug}`}
+                className="card-hit"
+                aria-label={t.details || "დეტალურად"}
+              />
               <div className="card-image">
                 <img src={imgUrl} alt={post.title} />
                 <div className="icon">{iconFor(i)}</div>

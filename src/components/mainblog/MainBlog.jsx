@@ -27,9 +27,7 @@ export default function MainBlog() {
         setT(map);
       })
       .catch(console.error);
-    return () => {
-      m = false;
-    };
+    return () => { m = false; };
   }, [lang]);
 
   useEffect(() => {
@@ -41,24 +39,29 @@ export default function MainBlog() {
         setPosts(r.data?.data?.category?.posts?.data || []);
       })
       .catch(console.error);
-    return () => {
-      m = false;
-    };
+    return () => { m = false; };
   }, [lang]);
 
   // duplicate if >1 so loop feels infinite
   const slides = posts.length > 1 ? [...posts, ...posts] : posts;
 
+  // safe title helper
+  const getLocalizedTitle = (titleObj) => {
+    if (titleObj == null) return '';                          // null/undefined
+    if (typeof titleObj === 'string') return titleObj;        // plain string
+    if (typeof titleObj === 'object') {                       // localized object
+      const L = lang.toLowerCase();
+      return titleObj[L] || titleObj.en || Object.values(titleObj)[0] || '';
+    }
+    return String(titleObj ?? '');
+  };
+
   return (
     <section className="mainblog-section">
       <div className="mainblog-header">
         <div className="mainblog-header-left">
-          <p className="subtitle">
-            {t.mainarticlenewslatest || 'ბოლო სიახლეები'}
-          </p>
-          <h2 className="title">
-            {t.mainlatestarticle || 'ჩვენი ბოლო სიახლეები'}
-          </h2>
+          <p className="subtitle">{t.mainarticlenewslatest || 'ბოლო სიახლეები'}</p>
+          <h2 className="title">{t.mainlatestarticle || 'ჩვენი ბოლო სიახლეები'}</h2>
         </div>
         <Link to={`/${lang.toLowerCase()}/blog`} className="all-news btn">
           {t.allnews || 'ყველა სიახლე'} <FaArrowRight className="icon" />
@@ -84,27 +87,35 @@ export default function MainBlog() {
             post.image?.original ||
             post.images?.[0]?.original_url ||
             'https://via.placeholder.com/400x300?text=No+Image';
-          const date = new Date(post.published_at).toLocaleDateString(
-            lang === 'KA' ? 'ka-GE' : 'en-US',
-            { day: '2-digit', month: 'short', year: 'numeric' }
-          );
-          const raw = post.post?.[lang.toLowerCase()] || '';
-          const text = raw.replace(/<[^>]+>/g, '');
-          const excerpt =
-            text.length > 100 ? text.slice(0, 100).trimEnd() + '...' : text;
+
+          const date = post.published_at
+            ? new Date(post.published_at).toLocaleDateString(
+                lang === 'KA' ? 'ka-GE' : 'en-US',
+                { day: '2-digit', month: 'short', year: 'numeric' }
+              )
+            : '';
+
+          const raw = (post.post && typeof post.post === 'object'
+                        ? post.post[lang.toLowerCase()] || post.post.en
+                        : post.post) || '';
+          const text = String(raw).replace(/<[^>]+>/g, '');
+          const excerpt = text.length > 100 ? text.slice(0, 100).trimEnd() + '…' : text;
+
+          // title (safe + max 75 chars)
+          const tVal = getLocalizedTitle(post.title);
+          const titleShort = tVal.length > 75 ? tVal.slice(0, 75).trimEnd() + '…' : tVal;
 
           return (
             <SwiperSlide key={`${post.id}-${idx}`}>
               <div className="blog-card">
-                <img src={img} alt={post.title} />
+                <img src={img} alt={titleShort} />
                 <div className="card-content">
                   <div className="card-date">
                     <FaCalendarAlt className="date-icon" />
                     <span>{date}</span>
                   </div>
-                  <h3 className="card-title">{post.title}</h3>
+                  <h3 className="card-title">{titleShort}</h3>
                   <p className="card-excerpt">{excerpt}</p>
-                  {/* ← changed here */}
                   <Link
                     to={`/${lang.toLowerCase()}/blog/${post.slug}`}
                     className="read-more btn"

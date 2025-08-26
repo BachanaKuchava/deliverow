@@ -45,7 +45,6 @@ export default function SingleBlog() {
 
   const LOCALE = lang.toLowerCase();
 
-  // title can be object or string
   const title =
     (typeof post.title === 'object'
       ? post.title[LOCALE] || post.title.en
@@ -59,7 +58,6 @@ export default function SingleBlog() {
       )
     : '';
 
-  // pick localized html (post -> description -> short_description)
   const pickLocalized = (val) => {
     if (!val) return '';
     if (typeof val === 'object') return val[LOCALE] || val.en || '';
@@ -69,12 +67,21 @@ export default function SingleBlog() {
   if (!html) html = pickLocalized(post.description);
   if (!html) html = pickLocalized(post.short_description);
 
-  // VIDEO support (cover)
   const v = post.video || {};
   const videoUrl   = v.embed_url || v.url || null;
   const vW         = Number(v.width)  || 16;
   const vH         = Number(v.height) || 9;
   const ratioStyle = { aspectRatio: `${vW} / ${vH}` };
+
+  // share links
+  const shareUrl   = typeof window !== 'undefined' ? window.location.href : '';
+  const shareText  = encodeURIComponent(title || '');
+  const shareHref  = encodeURIComponent(shareUrl);
+
+  const fb  = `https://www.facebook.com/sharer/sharer.php?u=${shareHref}`;
+  const tw  = `https://twitter.com/intent/tweet?url=${shareHref}&text=${shareText}`;
+  const wa  = `https://wa.me/?text=${shareText}%20${shareHref}`;
+  const ig  = `https://www.instagram.com/`; // Instagram has no web share—link to profile/app
 
   return (
     <div className="article-page appear">
@@ -82,7 +89,6 @@ export default function SingleBlog() {
         <h1 className="article-title">{title}</h1>
         {date && <p className="article-meta"><FaCalendarAlt /> {date}</p>}
 
-        {/* If there's a video, show it as the cover; otherwise show image */}
         {videoUrl ? (
           <div className="article-media" style={ratioStyle}>
             {v.embed_url ? (
@@ -94,11 +100,7 @@ export default function SingleBlog() {
                 loading="lazy"
               />
             ) : (
-              <video
-                controls
-                preload="metadata"
-                poster={img || undefined}
-              >
+              <video controls preload="metadata" poster={img || undefined}>
                 <source src={v.url} />
               </video>
             )}
@@ -125,10 +127,18 @@ export default function SingleBlog() {
             {lang === 'KA' ? 'გაზიარება' : 'Share'}
           </h4>
           <div className="widget__socials">
-            <FaFacebookF />
-            <FaTwitter />
-            <FaWhatsapp />
-            <FaInstagram />
+            <a className="social-btn fb" href={fb} target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook">
+              <FaFacebookF />
+            </a>
+            <a className="social-btn tw" href={tw} target="_blank" rel="noopener noreferrer" aria-label="Share on X">
+              <FaTwitter />
+            </a>
+            <a className="social-btn wa" href={wa} target="_blank" rel="noopener noreferrer" aria-label="Share on WhatsApp">
+              <FaWhatsapp />
+            </a>
+            <a className="social-btn ig" href={ig} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <FaInstagram />
+            </a>
           </div>
         </div>
       </aside>
