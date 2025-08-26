@@ -4,8 +4,6 @@
   background: #f5f9fc;
   padding: 4rem 5%;
   font-family: "Fira Sans", sans-serif;
-  // margin-top: 50px;
-  
 
   &__header {
     display: flex;
@@ -42,14 +40,8 @@
       font-weight: 500;
       transition: background 0.2s, color 0.2s;
 
-      svg {
-        font-size: 0.9rem;
-      }
-
-      &:hover {
-        background: #014681;
-        color: #fff;
-      }
+      svg { font-size: 0.9rem; }
+      &:hover { background: #014681; color: #fff; }
     }
   }
 
@@ -60,14 +52,23 @@
   }
 
   .card {
+    position: relative; /* <-- needed for full-card link */
     background: #fff;
     border-radius: 1rem;
     overflow: hidden;
     transition: transform 0.2s;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 
-    &:hover {
-      transform: translateY(-4px);
+    &:hover { transform: translateY(-4px); }
+
+    /* FULL-CARD TAP TARGET (hidden on desktops) */
+    .card-hit {
+      position: absolute;
+      inset: 0;
+      z-index: 5;                 /* above everything */
+      display: none;              /* enabled only on touch screens */
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation; /* remove 300ms delay */
     }
 
     .card-image {
@@ -107,9 +108,7 @@
         transition: opacity 0.3s;
       }
 
-      &:hover .overlay {
-        opacity: 1;
-      }
+      &:hover .overlay { opacity: 1; }
 
       .overlay-btn {
         background: #01b8ff;
@@ -124,13 +123,8 @@
         cursor: pointer;
         transition: background 0.2s;
 
-        &:hover {
-          background: #0190d6;
-        }
-
-        svg {
-          font-size: 0.9rem;
-        }
+        &:hover { background: #0190d6; }
+        svg { font-size: 0.9rem; }
       }
     }
 
@@ -151,6 +145,7 @@
     }
   }
 
+  /* Tablet adjustments */
   @media (max-width: 1024px) {
     &__header {
       flex-direction: column;
@@ -162,14 +157,19 @@
     }
   }
 
+  /* Mobile: enable ONE-TAP full-card link and disable hover overlay */
+  @media (hover: none) and (pointer: coarse) {
+    .card .card-hit { display: block; }
+    .card .card-image .overlay {
+      display: none !important;   /* prevent first-tap hover layer */
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+  }
+
   @media (max-width: 600px) {
     padding: 2rem 3%;
-    &__grid {
-      grid-template-columns: 1fr;
-    }
-
-    .service-section__header .title {
-      font-size: 20px;
-    }
+    &__grid { grid-template-columns: 1fr; }
+    .service-section__header .title { font-size: 20px; }
   }
 }
