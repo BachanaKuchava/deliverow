@@ -3,18 +3,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
-  FaShip,
-  FaPlane,
-  FaTrain,
-  FaTruck,
-  FaWarehouse,
-  FaBoxes,
   FaArrowRight,
   FaPhoneAlt,
   FaFilePdf,
   FaFileWord,
   FaPlay,
-  FaCheckCircle,
 } from "react-icons/fa";
 import axios from "axios";
 import "./singleservice.scss";
@@ -41,6 +34,7 @@ export default function SingleService() {
   useEffect(() => {
     let mounted = true;
     setLoading(true);
+    setShowVideo(false);
 
     axios
       .get(
@@ -48,24 +42,42 @@ export default function SingleService() {
       )
       .then((res) => {
         if (!mounted) return;
+
         const list = res.data?.data?.category?.posts?.data || [];
         setServices(list);
 
         const found = list.find((p) => p.slug === slug);
+
         if (found) {
           const raw = found.post;
           const htmlContent =
             typeof raw === "object" ? raw[lang.toLowerCase()] : raw;
+
+          const videoUrl =
+            typeof found.video === "string"
+              ? found.video.trim()
+              : typeof found.video_url === "string"
+              ? found.video_url.trim()
+              : typeof found.video?.original_url === "string"
+              ? found.video.original_url.trim()
+              : typeof found.video?.original === "string"
+              ? found.video.original.trim()
+              : "";
+
           setPost({
             title: found.title,
             html: htmlContent,
             images: found.images || [],
+            image: found.image || null,
+            videoUrl,
           });
         } else if (FALLBACKS[slug]) {
           setPost({
             title: FALLBACKS[slug].title,
             html: FALLBACKS[slug].html,
             images: [{ original: FALLBACKS[slug].image }],
+            image: { original: FALLBACKS[slug].image },
+            videoUrl: "",
           });
         } else {
           setError("Service not found");
@@ -85,9 +97,16 @@ export default function SingleService() {
 
   if (loading) return <div className="single-service">Loading…</div>;
   if (error) return <div className="single-service">Oops: {error}</div>;
+  if (!post) return null;
 
   const heroImg =
-    post.image?.original || post.images[0]?.original_url || "";
+    post.image?.original ||
+    post.image?.original_url ||
+    post.images?.[0]?.original_url ||
+    post.images?.[0]?.original ||
+    "";
+
+  const hasVideo = !!post?.videoUrl;
 
   return (
     <div className="single-service">
@@ -96,7 +115,7 @@ export default function SingleService() {
         <ul className="services-list">
           {services.map((s) => (
             <li key={s.slug}>
-              <Link to={`/${lang.toLowerCase()}/services/${s.slug}`}>  {/* updated path */}
+              <Link to={`/${lang.toLowerCase()}/services/${s.slug}`}>
                 {s.title.length > 30
                   ? s.title.substring(0, 30) + "…"
                   : s.title}
@@ -142,32 +161,24 @@ export default function SingleService() {
         </section>
 
         <section className="video-section">
-          <div className="video-thumb" onClick={() => setShowVideo(true)}>
-            {heroImg && <img src={heroImg} alt="Play video" />}
-            <div className="play-icon">
-              <FaPlay />
-            </div>
+          <div className="video-thumb">
+            {heroImg && <img src={heroImg} alt={post.title} />}
+
+            {hasVideo && (
+              <button
+                type="button"
+                className="play-icon"
+                onClick={() => setShowVideo(true)}
+              >
+                <FaPlay />
+              </button>
+            )}
           </div>
-          {/* <div className="video-content">
-            <h3 className="video-title">
-              Raise Capital Faster & Negotiate On Your Own Terms
-            </h3>
-            <p className="video-text">
-              When an unknown printer took a galley of type and scrambled it to
-              make a type specimen book.
-            </p>
-            <ul className="features-list">
-              <li><FaCheckCircle /> Quality Control System</li>
-              <li><FaCheckCircle /> 100% Satisfaction Guarantee</li>
-              <li><FaCheckCircle /> Professional and Qualified</li>
-              <li><FaCheckCircle /> Safe, Reliable And Express</li>
-            </ul>
-          </div> */}
         </section>
       </main>
 
       {/* VIDEO MODAL */}
-      {showVideo && (
+      {showVideo && hasVideo && (
         <div className="video-modal">
           <div className="video-modal__content">
             <button
@@ -177,10 +188,7 @@ export default function SingleService() {
               &times;
             </button>
             <video controls className="video-modal__video">
-              <source
-                src="https://www.w3schools.com/html/mov_bbb.mp4"
-                type="video/mp4"
-              />
+              <source src={post.videoUrl} type="video/mp4" />
             </video>
           </div>
         </div>
