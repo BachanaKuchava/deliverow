@@ -1,0 +1,21 @@
+# Deliverow deploy ინსტრუქცია (Windows + PowerShell + SSH)
+
+## რა გავაკეთეთ დღეს წარმატებით
+
+მიზანი იყო:
+ლოკალურ პროექტში დაჰბილდული `dist` ფოლდერის კონტენტი აგვეტანა სერვერზე და ჩაგვენაცვლებინა live public ფაილები.
+
+ლოკალური path:
+`C:\Users\bkuchava\Desktop\deliverow\deliverow\dist\`
+
+სერვერის target path:
+`/var/www/html/deliverow_ge/public`
+
+---
+
+## 1) SSH-ით სერვერზე შესვლა
+
+თუ debug არ გვინდა, ჩვეულებრივი შესვლა:
+
+```bash
+ssh -i C:\Users\bkuchava\.ssh\id_ed25519 bacho@deliverow.ge
